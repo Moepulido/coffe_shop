@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop - Editar Producto</title>
+</head>
+<body>
+    <header>
+        <h1>Coffee Shop</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'products:index' %}">Inicio</a></li>
+                <li><a href="{% url 'products:product_list' %}">Productos</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Editar Producto: {{ product.name }}</h2>
+        
+        {% if product.photo %}
+            <img src="{{ product.photo.url }}" alt="{{ product.name }}" style="max-width: 200px; margin-bottom: 20px;">
+        {% else %}
+            <p>No hay imagen - Sube una imagen a continuación</p>
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Usamos cada campo del formulario por separado -->
+            <p>
+                <label for="id_name">{{ form.name.label }}:</label> 
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <span class="error">{{ form.name.errors }}</span>
+                {% endif %}
+            </p>
+            
+            <p>
+                <label for="id_description">{{ form.description.label }}:</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <span class="error">{{ form.description.errors }}</span>
+                {% endif %}
+            </p>
+            
+            <p>
+                <label for="id_price">{{ form.price.label }}:</label>
+                {{ form.price }}
+                {% if form.price.errors %}
+                    <span class="error">{{ form.price.errors }}</span>
+                {% endif %}
+            </p>
+            
+            <p>
+                <label for="id_available">{{ form.available.label }}:</label>
+                {{ form.available }}
+                {% if form.available.errors %}
+                    <span class="error">{{ form.available.errors }}</span>
+                {% endif %}
+            </p>
+            
+            <p>
+                <label for="id_photo">{{ form.photo.label }}:</label>
+                {{ form.photo }}
+                {% if form.photo.errors %}
+                    <span class="error">{{ form.photo.errors }}</span>
+                {% endif %}
+                {% if product.photo %}
+                    <small>(Dejar en blanco para mantener la foto actual)</small>
+                {% endif %}
+            </p>
+            
+            <button type="submit">Guardar Cambios</button>
+        </form>
+        
+        <a href="{% url 'products:product_detail' product.id %}">Cancelar</a>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 Coffee Shop. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html> 
