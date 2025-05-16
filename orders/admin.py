@@ -12,7 +12,7 @@ class OrderProductInline(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     model = Order
-    inlines = [OrderProductInline]
+    inlines = [OrderProductInline, OrderProductInlineAdmin]	
     list_display = ('id', 'user', 'created_at', 'is_active')
     list_filter = ('is_active', 'created_at')
     search_fields = ('user__username',)

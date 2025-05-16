@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_tailwind',
+    'rest_framework',
     'products',
     'users',
     'orders',
@@ -52,6 +53,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'coffe_shop.middleware.LanguageMiddleware',  # Nuestro middleware personalizado
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -129,11 +131,27 @@ LANGUAGES = [
 # Nombre explícito para la cookie de idioma
 LANGUAGE_COOKIE_NAME = 'django_language'
 LANGUAGE_COOKIE_SAMESITE = 'Lax' # Recomendado para seguridad
+LANGUAGE_COOKIE_PATH = '/'   # Asegura que la cookie de idioma se aplique a todo el sitio
+LANGUAGE_COOKIE_DOMAIN = None  # Se aplica solo al dominio actual
+LANGUAGE_COOKIE_SECURE = False  # En producción debería ser True si usas HTTPS
+LANGUAGE_COOKIE_HTTPONLY = True  # Mejora la seguridad
 
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+# Ubicación de los archivos de traducción
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
+# Crispy Forms configuration
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+CRISPY_TEMPLATE_PACK = "tailwind"
+
+LOGIN_REDIRECT_URL = 'products:product_list'
+LOGOUT_REDIRECT_URL = 'login'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -152,13 +170,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOCALE_PATHS = [
-    BASE_DIR / 'locale',
-]
-
-# Crispy Forms configuration
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-CRISPY_TEMPLATE_PACK = "tailwind"
-
-LOGIN_REDIRECT_URL = 'products:product_list'
-LOGOUT_REDIRECT_URL = 'login'
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+}

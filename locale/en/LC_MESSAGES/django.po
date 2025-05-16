@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-05 18:30-0400\n"
+"POT-Creation-Date: 2025-05-14 19:43-0400\n"
 "PO-Revision-Date: 2025-04-19 15:00+0000\n"
 "Last-Translator: Coffee Shop <info@coffeeshop.com>\n"
 "Language-Team: English <en@coffeeshop.com>\n"
@@ -17,6 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\products\forms.py:7
+msgid "Nombre"
+msgstr "Name"
+
+#: .\products\forms.py:8 .\products\templates\products\product_detail.html:26
+msgid "Descripción"
+msgstr "Description"
+
+#: .\products\forms.py:9
+msgid "Precio"
+msgstr "Price"
+
+#: .\products\forms.py:10 .\products\templates\products\product_list.html:54
+msgid "Disponible"
+msgstr "Available"
+
+#: .\products\forms.py:11 .\products\models.py:11
+msgid "Foto"
+msgstr "Photo"
 
 #: .\products\models.py:7
 msgid "nombre"
@@ -34,10 +54,6 @@ msgstr "price"
 msgid "disponible"
 msgstr "available"
 
-#: .\products\models.py:11
-msgid "Foto"
-msgstr "Photo"
-
 #: .\products\models.py:12
 msgid "creado"
 msgstr "created"
@@ -49,22 +65,6 @@ msgstr "Product"
 #: .\products\models.py:19
 msgid "Productos"
 msgstr "Products"
-
-#: .\products\templates\products\add_product.html:6
-msgid "Agregar Producto"
-msgstr "Add Product"
-
-#: .\products\templates\products\add_product.html:11
-msgid "Agregar Nuevo Producto"
-msgstr "Add New Product"
-
-#: .\products\templates\products\add_product.html:19
-msgid "Agregar"
-msgstr "Add"
-
-#: .\products\templates\products\add_product.html:22
-msgid "Cancelar"
-msgstr "Cancel"
 
 #: .\products\templates\products\index.html:5
 msgid "Inicio"
@@ -99,10 +99,6 @@ msgstr "Find your moment of peace with a cup of our freshly made coffee."
 msgid "No hay imagen disponible"
 msgstr "No image available"
 
-#: .\products\templates\products\product_detail.html:26
-msgid "Descripción"
-msgstr "Description"
-
 #: .\products\templates\products\product_detail.html:33
 msgid "Editar Producto"
 msgstr "Edit Product"
@@ -116,49 +112,13 @@ msgstr "Back to product list"
 msgid "Lista de Productos"
 msgstr "Product List"
 
-#: .\products\templates\products\product_list.html:54
-msgid "Disponible"
-msgstr "Available"
-
 #: .\products\templates\products\product_list.html:56
 msgid "No disponible"
 msgstr "Not available"
 
-#: .\products\templates\products\product_list.html:61
-msgid "Ver detalles"
-msgstr "View details"
-
-#: .\products\templates\products\product_list.html:64
-msgid "Editar"
-msgstr "Edit"
-
-#: .\products\templates\products\product_list.html:71
+#: .\products\templates\products\product_list.html:97
 msgid "No hay productos disponibles."
 msgstr "No products available."
-
-#: .\templates\base.html:42
-msgid "Hola"
-msgstr "Hello"
-
-#: .\templates\base.html:44
-msgid "Login"
-msgstr "Login"
-
-#: .\users\templates\users\login.html:6
-msgid "Iniciar Sesión"
-msgstr "Login"
-
-#: .\users\templates\users\login.html:18
-msgid "Imagen decorativa para inicio de sesión"
-msgstr "Decorative image for login"
-
-#: .\users\templates\users\login.html:34
-msgid "¿No tienes una cuenta?"
-msgstr "Don't have an account?"
-
-#: .\users\templates\users\login.html:36
-msgid "Regístrate aquí"
-msgstr "Register here"
 
 #: .\users\templates\users\register.html:5
 msgid "Registro de Usuario"
@@ -179,6 +139,45 @@ msgstr "Already have an account?"
 #: .\users\templates\users\register.html:27
 msgid "Inicia sesión aquí"
 msgstr "Login here"
+
+#~ msgid "Ver detalles"
+#~ msgstr "View details"
+
+#~ msgid "Editar"
+#~ msgstr "Edit"
+
+#~ msgid "Agregar al carrito"
+#~ msgstr "Add to cart"
+
+#~ msgid "Agregar Producto"
+#~ msgstr "Add Product"
+
+#~ msgid "Agregar Nuevo Producto"
+#~ msgstr "Add New Product"
+
+#~ msgid "Agregar"
+#~ msgstr "Add"
+
+#~ msgid "Cancelar"
+#~ msgstr "Cancel"
+
+#~ msgid "Hola"
+#~ msgstr "Hello"
+
+#~ msgid "Login"
+#~ msgstr "Login"
+
+#~ msgid "Iniciar Sesión"
+#~ msgstr "Login"
+
+#~ msgid "Imagen decorativa para inicio de sesión"
+#~ msgstr "Decorative image for login"
+
+#~ msgid "¿No tienes una cuenta?"
+#~ msgstr "Don't have an account?"
+
+#~ msgid "Regístrate aquí"
+#~ msgstr "Register here"
 
 #~ msgid "Moe's Café"
 #~ msgstr "Moe's Café"

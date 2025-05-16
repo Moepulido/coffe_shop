@@ -24,17 +24,25 @@
                 <p class="text-2xl font-semibold text-amber-800 mb-4">€{{ product.price }}</p>
                 <div class="mb-6">
                     <h3 class="text-xl font-semibold text-primary mb-2">{% trans "Descripción" %}</h3>
-                    <p class="text-gray-700">{{ product.description }}</p>
+                    <p class="text-gray-700">
+                    {% if LANGUAGE_CODE == 'en' %}
+                        {% if product.description_en %}{{ product.description_en }}{% else %}{{ product.description }}{% endif %}
+                    {% elif LANGUAGE_CODE == 'fr' %}
+                        {% if product.description_fr %}{{ product.description_fr }}{% else %}{{ product.description }}{% endif %}
+                    {% else %}
+                        {{ product.description }}
+                    {% endif %}
+                    </p>
                 </div>
                 
                 <div class="mt-4 flex flex-wrap gap-2">
                     <a href="{% url 'products:edit_product' product.id %}" 
                        class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded">
-                        {% trans "Editar Producto" %}
+                        {% if LANGUAGE_CODE == 'en' %}Edit Product{% elif LANGUAGE_CODE == 'fr' %}Modifier le Produit{% else %}Editar Producto{% endif %}
                     </a>
                     <a href="{% url 'products:product_list' %}" 
                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
-                        {% trans "Volver a la lista de productos" %}
+                        {% if LANGUAGE_CODE == 'en' %}Back to product list{% elif LANGUAGE_CODE == 'fr' %}Retour à la liste des produits{% else %}Volver a la lista de productos{% endif %}
                     </a>
                 </div>
             </div>

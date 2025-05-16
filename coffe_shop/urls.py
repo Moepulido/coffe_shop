@@ -21,14 +21,24 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import set_language
 from django.contrib.auth.views import LogoutView
+from products.views import ProductFormView, index, product_list, product_detail, ProductListAPI
 
 # URLs sin prefijo de idioma (como el cambio de idioma y login)
 urlpatterns = [
+    path('', index, name='index'),  # Ruta raíz
     path('i18n/setlang/', set_language, name='set_language'),
     path('usuarios/', include('users.urls')),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('admin/', admin.site.urls),
     path('pedidos/', include('orders.urls')),
+    path('productos/agregar/', ProductFormView.as_view(), name='add_product'),  # Ruta directa
+    # Añadir rutas de productos directamente para que funcionen sin prefijo de idioma
+    path('products/', product_list, name='product_list'),
+    path('products/<int:product_id>/', product_detail, name='product_detail'),
+    # API endpoints
+    path('api/products/', ProductListAPI.as_view(), name='api_product_list'),
+    # URLs de autenticación de REST Framework
+    path('api-auth/', include('rest_framework.urls')),
 ]
 
 # URLs con prefijo de idioma

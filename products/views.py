@@ -4,12 +4,20 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from .forms import ProductForm
 from .models import Product
+from rest_framework.views import APIView
+from .serializers import ProductSerializer
+from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 
 # Create your views here.
 class ProductFormView(generic.FormView):
     form_class = ProductForm
     template_name = "products/add_product.html"
-    success_url = reverse_lazy('products:product_list')
+    success_url = "/products/"  # Cambiar a una URL absoluta
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
 
 class ProductListView(generic.ListView):
     model = Product
@@ -39,6 +47,8 @@ def edit_product(request, product_id):
             # Actualizamos manualmente el producto existente
             product.name = form.cleaned_data['name']
             product.description = form.cleaned_data['description']
+            product.description_en = form.cleaned_data['description_en']
+            product.description_fr = form.cleaned_data['description_fr']
             product.price = form.cleaned_data['price']
             product.available = form.cleaned_data['available']
             
@@ -53,6 +63,8 @@ def edit_product(request, product_id):
         initial_data = {
             'name': product.name,
             'description': product.description,
+            'description_en': product.description_en,
+            'description_fr': product.description_fr,
             'price': product.price,
             'available': product.available,
             # No incluimos la foto, ya que no podemos establecer valores iniciales para FileField
@@ -83,3 +95,13 @@ def product_list(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'products/product_detail.html', {'product': product})
+
+class ProductListAPI(APIView):
+    authentication_classes = []
+    permission_classes = []
+    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]  # Permitir tanto JSON como la interfaz navegable
+
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)

@@ -1,0 +1,25 @@
+{% load i18n %}
+<form id="language-selector-form" action="{% url 'set_language' %}" method="post">
+    {% csrf_token %}
+    <select name="language" id="language-selector" onchange="handleLanguageChange()">
+        {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
+        {% for lang in LANGUAGES %}
+            <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %}selected{% endif %}>
+                {{ lang.1 }}
+            </option>
+        {% endfor %}
+    </select>
+    <input type="hidden" name="next" id="next-url" value="{{ request.path }}">
+</form>
+<script>
+function handleLanguageChange() {
+    var form = document.getElementById('language-selector-form');
+    var nextInput = document.getElementById('next-url');
+    var currentPath = window.location.pathname;
+    // Elimina el prefijo de idioma si existe
+    var newPath = currentPath.replace(/^\/(es|en|fr)(\/|$)/, '/');
+    nextInput.value = newPath;
+    form.submit();
+}
+</script> 

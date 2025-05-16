@@ -37,13 +37,6 @@
 <body class="bg-amber-50">
     <div class="container mx-auto px-4">
         <header class="py-4">
-            <div class="flex justify-end mb-2 text-sm text-amber-800">
-                {% if user.is_authenticated %}
-                    {% trans "Hola" %}, {{ user.username }}
-                {% else %}
-                    <a href="{% url 'login' %}" class="text-indigo-600 hover:text-indigo-800">{% trans "Login" %}</a>
-                {% endif %}
-            </div>
             <nav class="flex flex-wrap items-center justify-between bg-amber-100 p-4 rounded-lg shadow-md mb-6">
                 <div class="flex items-center flex-shrink-0 mr-6">
                     <span class="font-semibold text-xl text-primary tracking-tight">
@@ -61,13 +54,13 @@
                 
                 <div id="navbar-menu" class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block">
                     <div class="text-sm lg:flex-grow">
-                        <a href="{% url 'products:index' %}" class="block mt-4 lg:inline-block lg:mt-0 text-secondary hover:text-primary mr-4">
+                        <a href="{% url 'index' %}" class="block mt-4 lg:inline-block lg:mt-0 text-secondary hover:text-primary mr-4">
                             {% if LANGUAGE_CODE == 'en' %}Home{% elif LANGUAGE_CODE == 'fr' %}Accueil{% else %}Inicio{% endif %}
                         </a>
                         <a href="{% url 'products:product_list' %}" class="block mt-4 lg:inline-block lg:mt-0 text-secondary hover:text-primary mr-4">
                             {% if LANGUAGE_CODE == 'en' %}Products{% elif LANGUAGE_CODE == 'fr' %}Produits{% else %}Productos{% endif %}
                         </a>
-                        <a href="{% url 'products:add_product' %}" class="block mt-4 lg:inline-block lg:mt-0 text-secondary hover:text-primary">
+                        <a href="{% url 'add_product' %}" class="block mt-4 lg:inline-block lg:mt-0 text-secondary hover:text-primary">
                             {% if LANGUAGE_CODE == 'en' %}Add Product{% elif LANGUAGE_CODE == 'fr' %}Ajouter un Produit{% else %}Agregar Producto{% endif %}
                         </a>
                     </div>
@@ -76,7 +69,7 @@
                         <div class="relative inline-block text-left mr-4">
                             <form id="language-form" action="{% url 'set_language' %}" method="post" class="inline">
                                 {% csrf_token %}
-                                <input id="language-next" name="next" type="hidden" value="/">
+                                <input id="language-next" name="next" type="hidden" value="{{ request.path }}">
                                 <select id="language-select" name="language" onchange="setLanguage(this)" class="block appearance-none bg-white border border-amber-300 hover:border-amber-500 px-4 py-2 pr-8 rounded shadow focus:outline-none focus:shadow-outline">
                                     <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Español</option>
                                     <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
@@ -86,12 +79,12 @@
                         </div>
                         <!-- Login/Logout/Pedido -->
                         {% if user.is_authenticated %}
-                            {# Botón Mi Pedido (requiere URL 'order_summary') #}
-                            <a href="#" {# {% url 'order_summary' %} #} class="inline-block text-sm px-4 py-2 leading-none border rounded text-green-600 border-green-600 hover:border-transparent hover:text-white hover:bg-green-600 mr-2">
+                            {# Botón Mi Pedido #}
+                            <a href="/pedidos/my_order/" class="inline-block text-sm px-4 py-2 leading-none border rounded text-green-600 border-green-600 hover:border-transparent hover:text-white hover:bg-green-600 mr-2">
                                 {% if LANGUAGE_CODE == 'en' %}My Order{% elif LANGUAGE_CODE == 'fr' %}Ma Commande{% else %}Mi pedido{% endif %}
                             </a>
                             {# Botón Salir #}
-                            <form action="{% url 'logout' %}" method="post" class="inline">
+                            <form action="/logout/" method="post" class="inline">
                                 {% csrf_token %}
                                 <button type="submit" class="inline-block text-sm px-4 py-2 leading-none border rounded text-red-600 border-red-600 hover:border-transparent hover:text-white hover:bg-red-600">
                                     {% if LANGUAGE_CODE == 'en' %}Logout{% elif LANGUAGE_CODE == 'fr' %}Déconnexion{% else %}Salir{% endif %} ({{ user.username }})
@@ -99,7 +92,7 @@
                             </form>
                         {% else %}
                             {# Botón Entrar (Login) #}
-                            <a href="{% url 'login' %}" class="inline-block text-sm px-4 py-2 leading-none border rounded text-indigo-600 border-indigo-600 hover:border-transparent hover:text-white hover:bg-indigo-600"> {# Cambiado a colores indigo #}
+                            <a href="/usuarios/login/" class="inline-block text-sm px-4 py-2 leading-none border rounded text-indigo-600 border-indigo-600 hover:border-transparent hover:text-white hover:bg-indigo-600"> {# Cambiado a colores indigo #}
                                 {% if LANGUAGE_CODE == 'en' %}Login{% elif LANGUAGE_CODE == 'fr' %}Connexion{% else %}Entrar{% endif %}
                             </a>
                         {% endif %}
@@ -141,21 +134,34 @@
 
         // Función para manejar el cambio de idioma
         function setLanguage(selectElement) {
-            // Obtener la URL actual
+            // Obtener la URL actual y el idioma seleccionado
             let path = window.location.pathname;
+            let selectedLanguage = selectElement.value;
             
-            // Eliminar cualquier prefijo de idioma existente (/en/ o /fr/)
-            if (path.startsWith('/en/') || path.startsWith('/fr/')) {
-                path = path.substring(3);
+            // Detectar si estamos en una ruta fuera del patrón i18n o en una ruta especial
+            if (path.startsWith('/usuarios/') || path.startsWith('/pedidos/') || path.startsWith('/productos/')) {
+                // Para rutas fuera del patrón i18n o rutas especiales, usamos la cookie para cambiar el idioma
+                // pero permanecemos en la misma URL
+                document.getElementById('language-next').value = path;
+            } else {
+                // Para rutas dentro del patrón i18n
+                // Eliminar cualquier prefijo de idioma existente
+                if (path.startsWith('/es/') || path.startsWith('/en/') || path.startsWith('/fr/')) {
+                    path = path.substring(3);
+                }
+                
+                // Si la ruta está vacía, usar la raíz
+                if (!path || path === '') {
+                    path = '/';
+                }
+                
+                // Actualizar el campo 'next' con la ruta adecuada
+                document.getElementById('language-next').value = path;
             }
             
-            // Si la ruta está vacía, usar la raíz
-            if (!path || path === '') {
-                path = '/';
-            }
-            
-            // Actualizar el campo 'next' con la ruta base sin prefijos de idioma
-            document.getElementById('language-next').value = path;
+            // Configurar una cookie para que nuestro middleware pueda leerla
+            document.cookie = "user_preferred_language=" + selectedLanguage + 
+                ";path=/;max-age=31536000;samesite=Lax";
             
             // Enviar el formulario
             document.getElementById('language-form').submit();

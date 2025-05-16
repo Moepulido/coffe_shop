@@ -45,6 +45,22 @@
             </p>
             
             <p>
+                <label for="id_description_en">{{ form.description_en.label }}:</label>
+                {{ form.description_en }}
+                {% if form.description_en.errors %}
+                    <span class="error">{{ form.description_en.errors }}</span>
+                {% endif %}
+            </p>
+            
+            <p>
+                <label for="id_description_fr">{{ form.description_fr.label }}:</label>
+                {{ form.description_fr }}
+                {% if form.description_fr.errors %}
+                    <span class="error">{{ form.description_fr.errors }}</span>
+                {% endif %}
+            </p>
+            
+            <p>
                 <label for="id_price">{{ form.price.label }}:</label>
                 {{ form.price }}
                 {% if form.price.errors %}
