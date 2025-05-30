@@ -1,7 +1,5 @@
 from django import forms
 from .models import OrderProduct
-    
-    
 
 
 class OrderProductForm(forms.ModelForm):

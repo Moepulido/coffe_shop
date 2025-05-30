@@ -54,10 +54,7 @@
                 
                 <div id="navbar-menu" class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block">
                     <div class="text-sm lg:flex-grow">
-                        <a href="{% url 'index' %}" class="block mt-4 lg:inline-block lg:mt-0 text-secondary hover:text-primary mr-4">
-                            {% if LANGUAGE_CODE == 'en' %}Home{% elif LANGUAGE_CODE == 'fr' %}Accueil{% else %}Inicio{% endif %}
-                        </a>
-                        <a href="{% url 'products:product_list' %}" class="block mt-4 lg:inline-block lg:mt-0 text-secondary hover:text-primary mr-4">
+                        <a href="{% url 'product_list' %}" class="block mt-4 lg:inline-block lg:mt-0 text-secondary hover:text-primary mr-4">
                             {% if LANGUAGE_CODE == 'en' %}Products{% elif LANGUAGE_CODE == 'fr' %}Produits{% else %}Productos{% endif %}
                         </a>
                         <a href="{% url 'add_product' %}" class="block mt-4 lg:inline-block lg:mt-0 text-secondary hover:text-primary">

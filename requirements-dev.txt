@@ -1,1 +1,2 @@
 ipython==9.0.2
+black

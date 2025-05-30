@@ -6,18 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('products', '0003_product_created_at'),
+        ("products", "0003_product_created_at"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='product',
-            name='description_en',
-            field=models.TextField(blank=True, max_length=300, null=True, verbose_name='descripción en inglés'),
+            model_name="product",
+            name="description_en",
+            field=models.TextField(
+                blank=True,
+                max_length=300,
+                null=True,
+                verbose_name="descripción en inglés",
+            ),
         ),
         migrations.AddField(
-            model_name='product',
-            name='description_fr',
-            field=models.TextField(blank=True, max_length=300, null=True, verbose_name='descripción en francés'),
+            model_name="product",
+            name="description_fr",
+            field=models.TextField(
+                blank=True,
+                max_length=300,
+                null=True,
+                verbose_name="descripción en francés",
+            ),
         ),
     ]
