@@ -14,109 +14,80 @@ from pathlib import Path
 import os
 import sys
 import environ
+import socket
 
-# from dotenv import load_dotenv  # Comentado temporalmente
-
-# load_dotenv()  # Comentado temporalmente
-
-# Agregar la ruta de PostgreSQL al PATH si existe
-postgres_bin = os.path.join("C:", os.sep, "Program Files", "PostgreSQL", "17", "bin")
-if os.path.exists(postgres_bin) and postgres_bin not in os.environ.get("PATH", ""):
-    os.environ["PATH"] = os.environ.get("PATH", "") + os.pathsep + postgres_bin
-    print(f"PostgreSQL agregado al PATH: {postgres_bin}")
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-env = environ.Env()
-env_path = os.path.join(BASE_DIR, ".env")
-print(f"Intentando leer archivo .env desde: {env_path}")
-print(f"¿El archivo existe?: {os.path.exists(env_path)}")
-environ.Env.read_env(env_path)
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-q$%rha$c@ux@!pvxu0(194)v9z&&ug@a8(m&1(rso^le-dc&5j"  # Usar directamente
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Usar directamente
-
-# ALLOWED_HOSTS - Configuración TOTALMENTE DINÁMICA para AWS
-print("🔧 CONFIGURANDO ALLOWED_HOSTS dinámicamente...")
+# ==============================================================================
+# CONFIGURACIÓN DINÁMICA DE ALLOWED_HOSTS (Prioridad #1)
+# Esto debe ejecutarse primero para evitar errores de DisallowedHost.
+# ==============================================================================
+print("🚀 [settings.py] Iniciando configuración...")
 
 # Configuración base segura
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'coffe-shop-production.eba-qvahx84p.us-east-2.elasticbeanstalk.com',  # Tu CNAME oficial
+    'coffe-shop-production.eba-qvahx84p.us-east-2.elasticbeanstalk.com',
 ]
 
 try:
-    import socket
     hostname = socket.gethostname()
-    current_dir = str(os.getcwd())
+    current_dir = os.getcwd()
     
-    print(f"🖥️  Hostname: {hostname}")
-    print(f"🖥️  Current dir: {current_dir}")
-    
-    # DETECCIÓN INTELIGENTE DE AWS
-    is_aws = any([
-        'ip-' in hostname,           # Hostname típico de AWS: ip-172-31-20-200
-        '/var/app' in current_dir,   # Directorio típico de AWS EB
-        not os.path.exists('C:\\'),  # Sistema Linux (no Windows)
-        'ec2' in hostname.lower(),   # Si contiene 'ec2'
-    ])
+    # Detección robusta de AWS
+    is_aws = 'ip-' in hostname or '/var/app' in current_dir
     
     if is_aws:
-        print("🔍 ¡AWS DETECTADO! Aplicando configuración dinámica...")
+        print(f"🔍 AWS DETECTADO (Hostname: {hostname})")
         
-        # Agregar hostname actual automáticamente
+        # Agregar hostname de la instancia y su IP local
         if hostname not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(hostname)
-            print(f"✅ Agregado hostname: {hostname}")
         
-        # Permitir rangos de IP comunes de AWS de forma segura
-        # Solo IPs privadas de AWS (más seguro que '*')
-        aws_ips = []
-        
-        # Obtener IP local del servidor
         try:
-            # Conectar a internet para obtener IP local
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(("8.8.8.8", 80))
-            local_ip = s.getsockname()[0]
-            s.close()
-            
+            local_ip = socket.gethostbyname(hostname)
             if local_ip not in ALLOWED_HOSTS:
                 ALLOWED_HOSTS.append(local_ip)
-                print(f"✅ Agregada IP local: {local_ip}")
-        except:
-            print("⚠️  No se pudo obtener IP local")
-        
-        # Permitir IPs típicas de AWS que hemos visto
-        common_aws_ips = [
-            '172.31.20.200',  # IP interna conocida
-            '172.31.23.211',  # Otra IP interna de logs anteriores  
-            '172.31.45.200',  # Otra IP interna de logs anteriores
-        ]
-        
+        except socket.gaierror:
+            pass # No se pudo resolver, continuar
+
+        # Asegurar que las IPs comunes de los health checkers estén
+        common_aws_ips = ['172.31.20.200', '172.31.23.211', '172.31.45.200']
         for ip in common_aws_ips:
             if ip not in ALLOWED_HOSTS:
                 ALLOWED_HOSTS.append(ip)
-        
-        print(f"✅ AWS MODE: {len(ALLOWED_HOSTS)} hosts permitidos")
-        
+                
     else:
-        print("🏠 DESARROLLO LOCAL detectado")
-    
-    print(f"🔒 ALLOWED_HOSTS final: {ALLOWED_HOSTS}")
-    
-except Exception as e:
-    print(f"⚠️  Error en detección dinámica: {e}")
-    # Fallback seguro: usar configuración permisiva temporal
-    ALLOWED_HOSTS = ['*']
-    print("🚨 FALLBACK: Usando ALLOWED_HOSTS = ['*'] por error")
+        print("🏠 ENTORNO LOCAL detectado.")
 
+except Exception as e:
+    # Fallback ultra seguro en caso de error de detección
+    print(f"⚠️ ERROR de detección, usando fallback: {e}")
+    ALLOWED_HOSTS.append('*')
+
+print(f"✅ ALLOWED_HOSTS configurado para: {ALLOWED_HOSTS}")
+# ==============================================================================
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Carga de variables de entorno desde .env
+env = environ.Env()
+env_path = os.path.join(BASE_DIR, ".env")
+if os.path.exists(env_path):
+    print(f"📖 Leyendo variables de entorno desde: {env_path}")
+    environ.Env.read_env(env_path)
+else:
+    print(f"🤔 No se encontró el archivo .env en: {env_path}")
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env('SECRET_KEY', default="django-insecure-q$%rha$c@ux@!pvxu0(194)v9z&&ug@a8(m&1(rso^le-dc&5j")
+
+# SECURITY WARNING: don't run with debug turned on in production!
+# El modo DEBUG se establecerá más abajo, dependiendo del entorno.
+DEBUG = True 
 
 # Application definition
 
@@ -176,7 +147,9 @@ WSGI_APPLICATION = "coffe_shop.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {"default": env.db("DJANGO_DB_URL")}
+DATABASES = {
+    "default": env.db("DJANGO_DB_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
+}
 
 
 # Password validation
@@ -252,6 +225,42 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# ==============================================================================
+# Configuración específica del entorno (local vs. producción)
+# ==============================================================================
+if is_aws:
+    print("🚀 Aplicando configuración de PRODUCCIÓN para AWS.")
+    DEBUG = False
+    
+    # Usar la base de datos de las variables de entorno si están disponibles (RDS)
+    if 'RDS_HOSTNAME' in os.environ:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.environ.get('RDS_DB_NAME'),
+                'USER': os.environ.get('RDS_USERNAME'),
+                'PASSWORD': os.environ.get('RDS_PASSWORD'),
+                'HOST': os.environ.get('RDS_HOSTNAME'),
+                'PORT': os.environ.get('RDS_PORT'),
+            }
+        }
+    else:
+        # Usar SQLite si no hay RDS configurado en producción
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
+    
+    # Configuración de archivos estáticos para producción
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+else:
+    print("🏠 Aplicando configuración de DESARROLLO LOCAL.")
+    # La configuración por defecto ya es adecuada para desarrollo
+    pass
+# ==============================================================================
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -263,21 +272,3 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
 }
-
-# Configuración específica para AWS Elastic Beanstalk
-# Simplificada temporalmente - detectar si estamos en servidor
-if '/var/app' in str(os.getcwd()) or not os.path.exists('C:\\'):  # Detectar Linux/AWS vs Windows
-    # Configuración para AWS (sin RDS por ahora, usando SQLite)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-    
-    # Configuración de seguridad para producción
-    DEBUG = False
-    print("🔍 AWS/LINUX DETECTADO - Configuración de producción aplicada")
-    
-    # Configuración de archivos estáticos para producción
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
