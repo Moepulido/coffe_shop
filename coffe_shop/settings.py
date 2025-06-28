@@ -15,6 +15,7 @@ import os
 import sys
 import environ
 import socket
+import dj_database_url
 
 # ==============================================================================
 # ¡¡¡ ADVERTENCIA DE DEPURACIÓN TEMPORAL !!!
@@ -237,33 +238,21 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ==============================================================================
 # Configuración específica del entorno (local vs. producción)
 # ==============================================================================
+is_aws = os.environ.get('IS_AWS_ENV', 'false').lower() == 'true'
+
 if is_aws:
     print("🚀 Aplicando configuración de PRODUCCIÓN para AWS.")
-    DEBUG = False # <-- RESTAURADO A SEGURO
-    
-    # Usar la base de datos de las variables de entorno si están disponibles (RDS)
-    if 'RDS_HOSTNAME' in os.environ:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': os.environ.get('RDS_DB_NAME'),
-                'USER': os.environ.get('RDS_USERNAME'),
-                'PASSWORD': os.environ.get('RDS_PASSWORD'),
-                'HOST': os.environ.get('RDS_HOSTNAME'),
-                'PORT': os.environ.get('RDS_PORT'),
-            }
-        }
-    else:
-        # Usar SQLite si no hay RDS configurado en producción
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
-    
-    # Configuración de archivos estáticos para producción
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    DEBUG = False
+    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+    ALLOWED_HOSTS = ['*'] # Se permite todo porque EB gestiona el host a través del ELB
+
+    # Configuración de la base de datos desde la URL de la variable de entorno
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=False)
+    }
+    # Asegúrate de que el motor de la base de datos sea el correcto para PostgreSQL
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
+
 else:
     print("🏠 Aplicando configuración de DESARROLLO LOCAL.")
     # La configuración por defecto ya es adecuada para desarrollo
