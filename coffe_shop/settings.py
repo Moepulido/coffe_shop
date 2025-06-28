@@ -17,6 +17,15 @@ import environ
 import socket
 
 # ==============================================================================
+# ¡¡¡ ADVERTENCIA DE DEPURACIÓN TEMPORAL !!!
+# Se ha forzado DEBUG = True para diagnosticar un error en producción.
+# Esto es INSEGURO y debe revertirse a DEBUG = False tan pronto como
+# se identifique el error.
+# ==============================================================================
+DEBUG = True
+print("🔥🔥🔥 MODO DEBUG FORZADO EN PRODUCCIÓN 🔥🔥🔥")
+
+# ==============================================================================
 # CONFIGURACIÓN DINÁMICA DE ALLOWED_HOSTS (Prioridad #1)
 # Esto debe ejecutarse primero para evitar errores de DisallowedHost.
 # ==============================================================================
@@ -87,7 +96,7 @@ SECRET_KEY = env('SECRET_KEY', default="django-insecure-q$%rha$c@ux@!pvxu0(194)v
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # El modo DEBUG se establecerá más abajo, dependiendo del entorno.
-DEBUG = True 
+# El modo DEBUG se establecerá más abajo, dependiendo del entorno.
 
 # Application definition
 
@@ -230,7 +239,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ==============================================================================
 if is_aws:
     print("🚀 Aplicando configuración de PRODUCCIÓN para AWS.")
-    DEBUG = False
+    # DEBUG = False # <-- TEMPORALMENTE DESACTIVADO
     
     # Usar la base de datos de las variables de entorno si están disponibles (RDS)
     if 'RDS_HOSTNAME' in os.environ:
