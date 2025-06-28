@@ -41,7 +41,81 @@ SECRET_KEY = "django-insecure-q$%rha$c@ux@!pvxu0(194)v9z&&ug@a8(m&1(rso^le-dc&5j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True  # Usar directamente
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]  # Definir directamente
+# ALLOWED_HOSTS - Configuración TOTALMENTE DINÁMICA para AWS
+print("🔧 CONFIGURANDO ALLOWED_HOSTS dinámicamente...")
+
+# Configuración base segura
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'coffe-shop-production.eba-qvahx84p.us-east-2.elasticbeanstalk.com',  # Tu CNAME oficial
+]
+
+try:
+    import socket
+    hostname = socket.gethostname()
+    current_dir = str(os.getcwd())
+    
+    print(f"🖥️  Hostname: {hostname}")
+    print(f"🖥️  Current dir: {current_dir}")
+    
+    # DETECCIÓN INTELIGENTE DE AWS
+    is_aws = any([
+        'ip-' in hostname,           # Hostname típico de AWS: ip-172-31-20-200
+        '/var/app' in current_dir,   # Directorio típico de AWS EB
+        not os.path.exists('C:\\'),  # Sistema Linux (no Windows)
+        'ec2' in hostname.lower(),   # Si contiene 'ec2'
+    ])
+    
+    if is_aws:
+        print("🔍 ¡AWS DETECTADO! Aplicando configuración dinámica...")
+        
+        # Agregar hostname actual automáticamente
+        if hostname not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(hostname)
+            print(f"✅ Agregado hostname: {hostname}")
+        
+        # Permitir rangos de IP comunes de AWS de forma segura
+        # Solo IPs privadas de AWS (más seguro que '*')
+        aws_ips = []
+        
+        # Obtener IP local del servidor
+        try:
+            # Conectar a internet para obtener IP local
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            local_ip = s.getsockname()[0]
+            s.close()
+            
+            if local_ip not in ALLOWED_HOSTS:
+                ALLOWED_HOSTS.append(local_ip)
+                print(f"✅ Agregada IP local: {local_ip}")
+        except:
+            print("⚠️  No se pudo obtener IP local")
+        
+        # Permitir IPs típicas de AWS que hemos visto
+        common_aws_ips = [
+            '172.31.20.200',  # IP interna conocida
+            '172.31.23.211',  # Otra IP interna de logs anteriores  
+            '172.31.45.200',  # Otra IP interna de logs anteriores
+        ]
+        
+        for ip in common_aws_ips:
+            if ip not in ALLOWED_HOSTS:
+                ALLOWED_HOSTS.append(ip)
+        
+        print(f"✅ AWS MODE: {len(ALLOWED_HOSTS)} hosts permitidos")
+        
+    else:
+        print("🏠 DESARROLLO LOCAL detectado")
+    
+    print(f"🔒 ALLOWED_HOSTS final: {ALLOWED_HOSTS}")
+    
+except Exception as e:
+    print(f"⚠️  Error en detección dinámica: {e}")
+    # Fallback seguro: usar configuración permisiva temporal
+    ALLOWED_HOSTS = ['*']
+    print("🚨 FALLBACK: Usando ALLOWED_HOSTS = ['*'] por error")
 
 
 # Application definition
@@ -189,3 +263,21 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
 }
+
+# Configuración específica para AWS Elastic Beanstalk
+# Simplificada temporalmente - detectar si estamos en servidor
+if '/var/app' in str(os.getcwd()) or not os.path.exists('C:\\'):  # Detectar Linux/AWS vs Windows
+    # Configuración para AWS (sin RDS por ahora, usando SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+    
+    # Configuración de seguridad para producción
+    DEBUG = False
+    print("🔍 AWS/LINUX DETECTADO - Configuración de producción aplicada")
+    
+    # Configuración de archivos estáticos para producción
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
