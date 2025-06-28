@@ -22,8 +22,8 @@ import socket
 # Esto es INSEGURO y debe revertirse a DEBUG = False tan pronto como
 # se identifique el error.
 # ==============================================================================
-DEBUG = True
-print("🔥🔥🔥 MODO DEBUG FORZADO EN PRODUCCIÓN 🔥🔥🔥")
+# DEBUG = True # ¡REVERTIDO!
+# print("🔥🔥🔥 MODO DEBUG FORZADO EN PRODUCCIÓN 🔥🔥🔥")
 
 # ==============================================================================
 # CONFIGURACIÓN DINÁMICA DE ALLOWED_HOSTS (Prioridad #1)
@@ -239,7 +239,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ==============================================================================
 if is_aws:
     print("🚀 Aplicando configuración de PRODUCCIÓN para AWS.")
-    # DEBUG = False # <-- TEMPORALMENTE DESACTIVADO
+    DEBUG = False # <-- RESTAURADO A SEGURO
     
     # Usar la base de datos de las variables de entorno si están disponibles (RDS)
     if 'RDS_HOSTNAME' in os.environ:
