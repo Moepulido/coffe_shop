@@ -48,7 +48,8 @@ urlpatterns = [
     path("api/products/", ProductListAPI.as_view(), name="api_product_list"),
     # URLs de autenticación de REST Framework
     path("api-auth/", include("rest_framework.urls")),
-]
+
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # URLs con prefijo de idioma
 urlpatterns += i18n_patterns(
