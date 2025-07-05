@@ -118,6 +118,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "coffe_shop.middleware.LanguageMiddleware",  # Nuestro middleware personalizado
@@ -224,7 +225,17 @@ LOGOUT_REDIRECT_URL = "login"
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = []  # Temporalmente vacío para evitar errores
+
+# Configuración de archivos estáticos
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Directorio para archivos estáticos personalizados
+]
+
+# Configuración de finders para archivos estáticos
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 # Media files
 MEDIA_URL = '/media/'
@@ -270,3 +281,17 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
 }
+
+# ==============================================================================
+# Configuración de WhiteNoise para archivos estáticos
+# ==============================================================================
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Configuración adicional de WhiteNoise
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True if not is_aws else False
+
+# Configuración de compresión para archivos estáticos
+WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br']
+
+print(f"🔧 WhiteNoise configurado para {'PRODUCCIÓN' if is_aws else 'DESARROLLO'}")

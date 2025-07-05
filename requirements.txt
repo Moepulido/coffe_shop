@@ -1,10 +1,11 @@
-dj-database-url
-Django>=5.1.7
-django-crispy-forms>=2.0
+dj-database-url==2.3.0
+Django==5.1.7
+django-crispy-forms==2.3
 python-dotenv>=1.0.0
 Pillow>=10.0.0
-crispy-tailwind==1.0.3
-djangorestframework>=3.16.0
-django-environ>=0.12.0
-psycopg2-binary>=2.9.10
+crispy-tailwind==0.5.0
+djangorestframework==3.15.2
+django-environ==0.11.2
+psycopg2-binary==2.9.10
+whitenoise==6.8.2
 
