@@ -102,8 +102,8 @@ SECRET_KEY = env('SECRET_KEY', default="django-insecure-q$%rha$c@ux@!pvxu0(194)v
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
+    'django.contrib.admin',
+    'django.contrib.auth',
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
