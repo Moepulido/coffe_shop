@@ -285,6 +285,7 @@ REST_FRAMEWORK = {
 # ==============================================================================
 # Configuración de WhiteNoise para archivos estáticos
 # ==============================================================================
+# Usar WhiteNoise para servir archivos estáticos
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuración adicional de WhiteNoise
@@ -293,5 +294,9 @@ WHITENOISE_AUTOREFRESH = True if not is_aws else False
 
 # Configuración de compresión para archivos estáticos
 WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br']
+
+# Configuración adicional para asegurar que los archivos del admin se sirvan correctamente
+WHITENOISE_MAX_AGE = 31536000  # 1 año para archivos estáticos
+WHITENOISE_STATIC_PREFIX = '/static/'
 
 print(f"🔧 WhiteNoise configurado para {'PRODUCCIÓN' if is_aws else 'DESARROLLO'}")
