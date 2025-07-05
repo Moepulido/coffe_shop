@@ -198,7 +198,7 @@ LANGUAGE_COOKIE_NAME = "django_language"
 LANGUAGE_COOKIE_SAMESITE = "Lax"  # Recomendado para seguridad
 LANGUAGE_COOKIE_PATH = "/"  # Asegura que la cookie de idioma se aplique a todo el sitio
 LANGUAGE_COOKIE_DOMAIN = None  # Se aplica solo al dominio actual
-LANGUAGE_COOKIE_SECURE = False  # En producción debería ser True si usas HTTPS
+LANGUAGE_COOKIE_SECURE = True if is_aws else False  # HTTPS en producción
 LANGUAGE_COOKIE_HTTPONLY = True  # Mejora la seguridad
 
 TIME_ZONE = "UTC"
@@ -299,4 +299,14 @@ WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip
 WHITENOISE_MAX_AGE = 31536000  # 1 año para archivos estáticos
 WHITENOISE_STATIC_PREFIX = '/static/'
 
+# Configuración para servir archivos de media con WhiteNoise
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True if not is_aws else False
+
+# Configuración específica para archivos de media en AWS
+if is_aws:
+    # En producción, usar el mismo directorio para media que en desarrollo
+    MEDIA_ROOT = '/var/app/current/media'
+    MEDIA_URL = '/media/'
+    
 print(f"🔧 WhiteNoise configurado para {'PRODUCCIÓN' if is_aws else 'DESARROLLO'}")
