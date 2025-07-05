@@ -57,7 +57,10 @@ urlpatterns += i18n_patterns(
     prefix_default_language=False,
 )
 
-# Para servir archivos media y static en desarrollo
+# Para servir archivos media en desarrollo y producción
+# En producción, esto será manejado por el servidor web, pero necesitamos la configuración
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Para servir archivos static solo en desarrollo (WhiteNoise maneja esto en producción)
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
