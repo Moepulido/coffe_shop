@@ -42,7 +42,7 @@ def serve_media(request, path):
     # Construir la ruta completa del archivo
     file_path = os.path.join(settings.MEDIA_ROOT, path)
     
-    # Verificar que el archivo existe y está dentro del directorio MEDIA_ROOT
+    # Verificar seguridad y existencia
     if not os.path.exists(file_path) or not os.path.commonpath([settings.MEDIA_ROOT, file_path]) == settings.MEDIA_ROOT:
         raise Http404("Archivo no encontrado")
     

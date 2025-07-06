@@ -31,31 +31,26 @@ from products.views import (
 )
 from .views import serve_media
 
-# URLs sin prefijo de idioma (como el cambio de idioma y login)
+# URLs sin prefijo de idioma (servicios básicos)
 urlpatterns = [
-    path("", index, name="index"),  # Ruta raíz
     path("i18n/setlang/", set_language, name="set_language"),
-    path("usuarios/", include("users.urls")),
-    path("logout/", LogoutView.as_view(), name="logout"),
     path("admin/", admin.site.urls),
-    path("pedidos/", include("orders.urls")),
-    path(
-        "productos/agregar/", ProductFormView.as_view(), name="add_product"
-    ),  # Ruta directa
-    # Añadir rutas de productos directamente para que funcionen sin prefijo de idioma
-    path("products/", product_list, name="product_list"),
-    path("products/<int:product_id>/", product_detail, name="product_detail"),
     # API endpoints
     path("api/products/", ProductListAPI.as_view(), name="api_product_list"),
-    # URLs de autenticación de REST Framework
     path("api-auth/", include("rest_framework.urls")),
+]
 
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# URLs con prefijo de idioma
+# URLs con prefijo de idioma (todo el contenido principal)
 urlpatterns += i18n_patterns(
+    path("", index, name="index"),  # Ruta raíz con i18n
+    path("usuarios/", include("users.urls")),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("pedidos/", include("orders.urls")),
+    path("productos/agregar/", ProductFormView.as_view(), name="add_product"),
+    path("products/", product_list, name="product_list"),
+    path("products/<int:product_id>/", product_detail, name="product_detail"),
     path("", include("products.urls")),
-    prefix_default_language=False,
+    prefix_default_language=False,  # No agregar prefijo para el idioma por defecto
 )
 
 # Para servir archivos media

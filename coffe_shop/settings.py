@@ -185,11 +185,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "es"
+LANGUAGE_CODE = "en"  # Cambiar a inglés como idioma por defecto
 
 LANGUAGES = [
-    ("es", "Español"),
     ("en", "English"),
+    ("es", "Español"),
     ("fr", "Français"),
 ]
 
@@ -198,7 +198,7 @@ LANGUAGE_COOKIE_NAME = "django_language"
 LANGUAGE_COOKIE_SAMESITE = "Lax"  # Recomendado para seguridad
 LANGUAGE_COOKIE_PATH = "/"  # Asegura que la cookie de idioma se aplique a todo el sitio
 LANGUAGE_COOKIE_DOMAIN = None  # Se aplica solo al dominio actual
-LANGUAGE_COOKIE_SECURE = True if is_aws else False  # HTTPS en producción
+LANGUAGE_COOKIE_SECURE = False  # Simplificar para que funcione en HTTP y HTTPS
 LANGUAGE_COOKIE_HTTPONLY = True  # Mejora la seguridad
 
 TIME_ZONE = "UTC"
