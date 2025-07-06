@@ -29,6 +29,7 @@ from products.views import (
     product_detail,
     ProductListAPI,
 )
+from .views import serve_media
 
 # URLs sin prefijo de idioma (como el cambio de idioma y login)
 urlpatterns = [
@@ -57,9 +58,15 @@ urlpatterns += i18n_patterns(
     prefix_default_language=False,
 )
 
-# Para servir archivos media en desarrollo y producción
-# En producción, esto será manejado por el servidor web, pero necesitamos la configuración
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Para servir archivos media
+if settings.DEBUG:
+    # En desarrollo, usar el servidor de desarrollo de Django
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # En producción, usar nuestra vista personalizada
+    urlpatterns += [
+        path('media/<path:path>', serve_media, name='serve_media'),
+    ]
 
 # Para servir archivos static solo en desarrollo (WhiteNoise maneja esto en producción)
 if settings.DEBUG:

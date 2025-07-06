@@ -309,4 +309,11 @@ if is_aws:
     MEDIA_ROOT = '/var/app/current/media'
     MEDIA_URL = '/media/'
     
+    # Configurar WhiteNoise para servir archivos de media
+    WHITENOISE_STATIC_PREFIX = '/static/'
+    
+    # Agregar el directorio de media como un directorio estático adicional
+    import os
+    STATICFILES_DIRS.append(('media', MEDIA_ROOT))
+    
 print(f"🔧 WhiteNoise configurado para {'PRODUCCIÓN' if is_aws else 'DESARROLLO'}")
