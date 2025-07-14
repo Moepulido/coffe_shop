@@ -12,7 +12,7 @@
         <div class="flex flex-col md:flex-row">
             <div class="md:w-1/3 mb-4 md:mb-0">
                 {% if product.photo %}
-                    <img src="{{ product.photo.url }}" alt="{{ product.name }}" class="w-full rounded-lg shadow">
+                    <img src="{% static 'images/' %}{{ product.photo }}" alt="{{ product.name }}" class="w-full rounded-lg shadow">
                 {% else %}
                     <div class="w-full bg-gray-200 rounded-lg flex items-center justify-center h-64">
                         <p class="text-gray-500">{% trans "No hay imagen disponible" %}</p>
@@ -36,10 +36,12 @@
                 </div>
                 
                 <div class="mt-4 flex flex-wrap gap-2">
+                    {% if user.is_authenticated and user.is_superuser %}
                     <a href="{% url 'products:edit_product' product.id %}" 
                        class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded">
                         {% if LANGUAGE_CODE == 'en' %}Edit Product{% elif LANGUAGE_CODE == 'fr' %}Modifier le Produit{% else %}Editar Producto{% endif %}
                     </a>
+                    {% endif %}
                     <a href="{% url 'products:product_list' %}" 
                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded">
                         {% if LANGUAGE_CODE == 'en' %}Back to product list{% elif LANGUAGE_CODE == 'fr' %}Retour à la liste des produits{% else %}Volver a la lista de productos{% endif %}

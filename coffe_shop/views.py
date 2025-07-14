@@ -8,6 +8,8 @@ from django.conf import settings
 from django.views.decorators.http import require_GET
 from django.views.decorators.cache import cache_control
 import mimetypes
+from django.shortcuts import redirect
+from django.utils.translation import get_language_from_request
 
 
 def home(request):
@@ -59,3 +61,24 @@ def serve_media(request, path):
             return response
     except IOError:
         raise Http404("Error al leer el archivo")
+
+
+def diagnostico_archivos(request):
+    base_path = settings.BASE_DIR
+    resultado = []
+    for root, dirs, files in os.walk(base_path):
+        nivel = root.replace(str(base_path), '').count(os.sep)
+        indent = '&nbsp;&nbsp;' * nivel
+        resultado.append(f"{indent}<b>{os.path.basename(root)}/</b>")
+        subindent = '&nbsp;&nbsp;' * (nivel + 1)
+        for f in files:
+            resultado.append(f"{subindent}{f}")
+    html = '<h2>Estructura de archivos en producción</h2><pre>' + '<br>'.join(resultado) + '</pre>'
+    return HttpResponse(html)
+
+
+def root_redirect(request):
+    lang = get_language_from_request(request)
+    if lang not in ['en', 'es', 'fr']:
+        lang = 'en'
+    return redirect(f'/{lang}/')

@@ -17,8 +17,11 @@ class Product(models.Model):
         max_digits=10, decimal_places=2, verbose_name=_("precio")
     )
     available = models.BooleanField(default=True, verbose_name=_("disponible"))
-    photo = models.ImageField(
-        upload_to="logos", null=True, blank=True, verbose_name=_("Foto")
+    photo = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name=_('Foto (nombre de archivo en static/images/)')
     )
     created_at = models.DateField(default=timezone.now, verbose_name=_("creado"))
 

@@ -2,8 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
 
 
 # Create your views here.
@@ -39,9 +37,3 @@ def register_view(request):
     else:
         form = UserCreationForm()
     return render(request, "users/register.html", {"form": form})
-
-
-class RegisterView(CreateView):
-    form_class = UserCreationForm
-    template_name = "users/register.html"
-    success_url = reverse_lazy("login")

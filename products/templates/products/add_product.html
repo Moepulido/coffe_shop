@@ -4,26 +4,26 @@
 {% load crispy_forms_tags %}
 
 {% block title %}
-    {% if LANGUAGE_CODE == 'en' %}Add Product{% elif LANGUAGE_CODE == 'fr' %}Ajouter un Produit{% else %}Agregar Producto{% endif %} - Coffee Shop
+    {% trans "Add Product" %} - Coffee Shop
 {% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     <div class="bg-white shadow-md rounded-lg overflow-hidden p-6 max-w-2xl mx-auto">
         <h2 class="text-2xl font-bold text-primary mb-6">
-            {% if LANGUAGE_CODE == 'en' %}Add New Product{% elif LANGUAGE_CODE == 'fr' %}Ajouter un Nouveau Produit{% else %}Agregar Nuevo Producto{% endif %}
+            {% trans "Add New Product" %}
         </h2>
         
-        <form action="/productos/agregar/" method="post" enctype="multipart/form-data" class="space-y-4">
+        <form action="{% url 'products:add_product' %}" method="post" class="space-y-4">
             {% csrf_token %}
             {{ form|crispy }}
             
             <div class="mt-6">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded">
-                    {% if LANGUAGE_CODE == 'en' %}Add{% elif LANGUAGE_CODE == 'fr' %}Ajouter{% else %}Agregar{% endif %}
+                    {% trans "Add" %}
                 </button>
                 <a href="{% url 'products:product_list' %}" class="ml-4 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded">
-                    {% if LANGUAGE_CODE == 'en' %}Cancel{% elif LANGUAGE_CODE == 'fr' %}Annuler{% else %}Cancelar{% endif %}
+                    {% trans "Cancel" %}
                 </a>
             </div>
         </form>

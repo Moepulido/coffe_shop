@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import ProductForm
 from .models import Product
 from rest_framework.views import APIView
@@ -39,13 +39,18 @@ class ProductListView(generic.ListView):
             return self.form_invalid(form)
 
 
-# Vista de edición basada en función - solución con formulario existente
+def is_superuser(user):
+    return user.is_superuser
+
+# Vista de edición protegida para administradores
+@login_required
+@user_passes_test(is_superuser)
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
     if request.method == "POST":
-        # Usamos el formulario para validación de datos
-        form = ProductForm(request.POST, request.FILES)
+        # El formulario ya no maneja archivos, solo datos de POST
+        form = ProductForm(request.POST)
         if form.is_valid():
             # Actualizamos manualmente el producto existente
             product.name = form.cleaned_data["name"]
@@ -54,11 +59,8 @@ def edit_product(request, product_id):
             product.description_fr = form.cleaned_data["description_fr"]
             product.price = form.cleaned_data["price"]
             product.available = form.cleaned_data["available"]
-
-            if form.cleaned_data["photo"]:
-                product.photo = form.cleaned_data["photo"]
-
-            # Guardar el producto
+            product.photo = form.cleaned_data["photo"] # Asigna el nuevo nombre de archivo
+            
             product.save()
             return redirect("products:product_detail", product_id=product.id)
     else:
@@ -70,7 +72,7 @@ def edit_product(request, product_id):
             "description_fr": product.description_fr,
             "price": product.price,
             "available": product.available,
-            # No incluimos la foto, ya que no podemos establecer valores iniciales para FileField
+            "photo": product.photo, # Pasamos el nombre del archivo actual
         }
         form = ProductForm(initial=initial_data)
 
@@ -83,7 +85,7 @@ def edit_product(request, product_id):
 # Vista alternativa basada en función para añadir productos
 def add_product(request):
     if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES)
+        form = ProductForm(request.POST) # No se manejan archivos
         if form.is_valid():
             form.save()
             return redirect("products:product_list")
@@ -106,13 +108,11 @@ def product_detail(request, product_id):
     return render(request, "products/product_detail.html", {"product": product})
 
 
-class ProductListAPI(APIView):
-    authentication_classes = []
-    permission_classes = []
-    renderer_classes = [
-        JSONRenderer,
-        BrowsableAPIRenderer,
-    ]  # Permitir tanto JSON como la interfaz navegable
+# ==============================================================================
+# API Views
+# ==============================================================================
+class ProductAPIView(APIView):
+    renderer_classes = [JSONRenderer, BrowsableAPIRenderer]
 
     def get(self, request):
         products = Product.objects.all()

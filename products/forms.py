@@ -4,17 +4,13 @@ from .models import Product
 
 
 class ProductForm(forms.Form):
-    name = forms.CharField(max_length=200, label=_("Nombre"))
-    description = forms.CharField(max_length=300, label=_("Descripción en español"))
-    description_en = forms.CharField(
-        max_length=300, label=_("Descripción en inglés"), required=False
-    )
-    description_fr = forms.CharField(
-        max_length=300, label=_("Descripción en francés"), required=False
-    )
-    price = forms.DecimalField(max_digits=10, decimal_places=2, label=_("Precio"))
-    available = forms.BooleanField(initial=True, label=_("Disponible"), required=False)
-    photo = forms.ImageField(label=_("Foto"), required=False)
+    name = forms.CharField(max_length=200, label=_('Nombre'))
+    description = forms.CharField(max_length=300, label=_('Descripción en español'))
+    description_en = forms.CharField(max_length=300, label=_('Descripción en inglés'), required=False)
+    description_fr = forms.CharField(max_length=300, label=_('Descripción en francés'), required=False)
+    price = forms.DecimalField(max_digits=10, decimal_places=2, label=_('Precio'))
+    available = forms.BooleanField(initial=True, label=_('Disponible'), required=False)
+    photo = forms.CharField(max_length=100, label=_('Nombre de archivo de la imagen (en static/images/)'), required=False)
 
     def save(self):
         Product.objects.create(

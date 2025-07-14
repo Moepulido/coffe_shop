@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-14 19:43-0400\n"
+"POT-Creation-Date: 2025-07-12 00:04-0400\n"
 "PO-Revision-Date: 2025-04-19 15:00+0000\n"
 "Last-Translator: Coffee Shop <info@coffeeshop.com>\n"
 "Language-Team: French <fr@coffeeshop.com>\n"
@@ -22,92 +22,122 @@ msgstr ""
 msgid "Nombre"
 msgstr "Nom"
 
-#: .\products\forms.py:8 .\products\templates\products\product_detail.html:26
-msgid "Descripción"
-msgstr "Description"
+#: .\products\forms.py:8
+msgid "Descripción en español"
+msgstr "Description en espagnol"
 
-#: .\products\forms.py:9
+#: .\products\forms.py:10
+msgid "Descripción en inglés"
+msgstr "Description en anglais"
+
+#: .\products\forms.py:13
+msgid "Descripción en francés"
+msgstr "Description en français"
+
+#: .\products\forms.py:15
 msgid "Precio"
 msgstr "Prix"
 
-#: .\products\forms.py:10 .\products\templates\products\product_list.html:54
+#: .\products\forms.py:16 .\products\templates\products\product_list.html:54
 msgid "Disponible"
 msgstr "Disponible"
 
-#: .\products\forms.py:11 .\products\models.py:11
+#: .\products\forms.py:17 .\products\models.py:21
 msgid "Foto"
 msgstr "Photo"
 
-#: .\products\models.py:7
+#: .\products\models.py:8
 msgid "nombre"
 msgstr "nom"
 
-#: .\products\models.py:8
+#: .\products\models.py:9
 msgid "descripcion"
 msgstr "description"
 
-#: .\products\models.py:9
+#: .\products\models.py:11
+msgid "descripción en inglés"
+msgstr "description en anglais"
+
+#: .\products\models.py:14
+msgid "descripción en francés"
+msgstr "description en français"
+
+#: .\products\models.py:17
 msgid "precio"
 msgstr "prix"
 
-#: .\products\models.py:10
+#: .\products\models.py:19
 msgid "disponible"
 msgstr "disponible"
 
-#: .\products\models.py:12
+#: .\products\models.py:23
 msgid "creado"
 msgstr "créé"
 
-#: .\products\models.py:18
+#: .\products\models.py:29
 msgid "Producto"
 msgstr "Produit"
 
-#: .\products\models.py:19
+#: .\products\models.py:30
 msgid "Productos"
 msgstr "Produits"
 
+#: .\products\templates\products\add_product.html:7 .\templates\base.html:61
+msgid "Add Product"
+msgstr "Ajouter un Produit"
+
+#: .\products\templates\products\add_product.html:14
+msgid "Add New Product"
+msgstr "Ajouter un Nouveau Produit"
+
+#: .\products\templates\products\add_product.html:23
+msgid "Add"
+msgstr "Ajouter"
+
+#: .\products\templates\products\add_product.html:26
+msgid "Cancel"
+msgstr "Annuler"
+
 #: .\products\templates\products\index.html:5
-msgid "Inicio"
+msgid "Home"
 msgstr "Accueil"
 
 #: .\products\templates\products\index.html:9
-msgid "Bienvenido a Coffee Shop"
+#, fuzzy
+#| msgid "Bienvenido a Coffee Shop"
+msgid "Welcome to Coffee Shop"
 msgstr "Bienvenue à Coffee Shop"
 
 #: .\products\templates\products\index.html:12
-msgid "Nuestros Mejores Cafés"
+msgid "Our Best Coffees"
 msgstr "Nos Meilleurs Cafés"
 
 #: .\products\templates\products\index.html:13
-msgid "Disfruta de la mejor selección de cafés de especialidad."
+msgid "Enjoy the best selection of specialty coffees."
 msgstr "Profitez de la meilleure sélection de cafés de spécialité."
 
 #: .\products\templates\products\index.html:16
-msgid "Ver todos nuestros productos"
+#, fuzzy
+#| msgid "Volver a la lista de productos"
+msgid "View all our products"
 msgstr "Voir tous nos produits"
 
 #: .\products\templates\products\index.html:22
-msgid "Visítanos"
+msgid "Visit Us"
 msgstr "Visitez-nous"
 
 #: .\products\templates\products\index.html:23
-msgid "Encuentra tu momento de paz con una taza de nuestro café recién hecho."
-msgstr ""
-"Trouvez votre moment de paix avec une tasse de notre café fraîchement "
-"préparé."
+msgid "Find your moment of peace with a cup of our freshly made coffee."
+msgstr "Trouvez votre moment de paix avec une tasse de notre café fraîchement préparé."
 
 #: .\products\templates\products\product_detail.html:18
 #: .\products\templates\products\product_list.html:24
 msgid "No hay imagen disponible"
 msgstr "Pas d'image disponible"
 
-#: .\products\templates\products\product_detail.html:33
-msgid "Editar Producto"
-msgstr "Modifier le Produit"
-
-#: .\products\templates\products\product_detail.html:37
-msgid "Volver a la lista de productos"
-msgstr "Retour à la liste des produits"
+#: .\products\templates\products\product_detail.html:26
+msgid "Descripción"
+msgstr "Description"
 
 #: .\products\templates\products\product_list.html:4
 #: .\products\templates\products\product_list.html:8
@@ -118,9 +148,43 @@ msgstr "Liste des Produits"
 msgid "No disponible"
 msgstr "Non disponible"
 
-#: .\products\templates\products\product_list.html:97
+#: .\products\templates\products\product_list.html:61
+msgid "View details"
+msgstr "Voir détails"
+
+#: .\products\templates\products\product_list.html:64
+msgid "Edit"
+msgstr "Modifier"
+
+#: .\products\templates\products\product_list.html:73
+msgid "Add to cart"
+msgstr "Ajouter au panier"
+
+#: .\products\templates\products\product_list.html:81
 msgid "No hay productos disponibles."
 msgstr "Aucun produit disponible."
+
+#: .\templates\base.html:58
+#, fuzzy
+#| msgid "Products"
+msgid "Products"
+msgstr "Produits"
+
+#: .\templates\base.html:84
+msgid "My Order"
+msgstr "Ma Commande"
+
+#: .\templates\base.html:90
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: .\templates\base.html:96
+msgid "Login"
+msgstr "Connexion"
+
+#: .\templates\base.html:123
+msgid "All rights reserved."
+msgstr "Tous droits réservés."
 
 #: .\users\templates\users\register.html:5
 msgid "Registro de Usuario"
@@ -142,11 +206,29 @@ msgstr "Vous avez déjà un compte?"
 msgid "Inicia sesión aquí"
 msgstr "Connectez-vous ici"
 
-#~ msgid "Ver detalles"
-#~ msgstr "Voir détails"
+#~ msgid "Inicio"
+#~ msgstr "Accueil"
 
-#~ msgid "Editar"
-#~ msgstr "Modifier"
+#~ msgid "Nuestros Mejores Cafés"
+#~ msgstr "Nos Meilleurs Cafés"
+
+#~ msgid "Disfruta de la mejor selección de cafés de especialidad."
+#~ msgstr "Profitez de la meilleure sélection de cafés de spécialité."
+
+#~ msgid "Ver todos nuestros productos"
+#~ msgstr "Voir tous nos produits"
+
+#~ msgid "Visítanos"
+#~ msgstr "Visitez-nous"
+
+#~ msgid ""
+#~ "Encuentra tu momento de paz con una taza de nuestro café recién hecho."
+#~ msgstr ""
+#~ "Trouvez votre moment de paix avec une tasse de notre café fraîchement "
+#~ "préparé."
+
+#~ msgid "Editar Producto"
+#~ msgstr "Modifier le Produit"
 
 #~ msgid "Agregar al carrito"
 #~ msgstr "Ajouter au panier"
@@ -154,20 +236,11 @@ msgstr "Connectez-vous ici"
 #~ msgid "Agregar Producto"
 #~ msgstr "Ajouter un Produit"
 
-#~ msgid "Agregar Nuevo Producto"
-#~ msgstr "Ajouter un Nouveau Produit"
-
 #~ msgid "Agregar"
 #~ msgstr "Ajouter"
 
-#~ msgid "Cancelar"
-#~ msgstr "Annuler"
-
 #~ msgid "Hola"
 #~ msgstr "Bonjour"
-
-#~ msgid "Login"
-#~ msgstr "Connexion"
 
 #~ msgid "Iniciar Sesión"
 #~ msgstr "Se Connecter"

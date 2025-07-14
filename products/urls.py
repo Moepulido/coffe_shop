@@ -24,8 +24,8 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("products/", views.product_list, name="product_list"),
     path("products/<int:product_id>/", views.product_detail, name="product_detail"),
-    path("productos/agregar/", views.ProductFormView.as_view(), name="add_product"),
-    path("productos/editar/<int:product_id>/", views.edit_product, name="edit_product"),
-    # Si prefieres usar la vista basada en clase, comenta la línea anterior y descomenta esta:
+    path("products/add/", views.ProductFormView.as_view(), name="add_product"),
+    path("products/edit/<int:product_id>/", views.edit_product, name="edit_product"),
+    # If you prefer to use the class-based view, comment out the line above and uncomment this one:
     # path('products/', views.ProductListView.as_view(), name='product_list'),
 ]

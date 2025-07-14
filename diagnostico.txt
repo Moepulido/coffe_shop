@@ -1,0 +1,2 @@
+ESTE ES EL DIAGNOSTICO DEL DESPLIEGUE
+Si ves este archivo en el navegador, el código fuente se está subiendo correctamente a AWS Elastic Beanstalk. 

@@ -1,0 +1,207 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-12 01:21-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+#: coffe_shop/coffe_shop/views.py:18
+msgid "Archivo no encontrado"
+msgstr "Archivo no encontrado"
+
+#: coffe_shop/coffe_shop/views.py:26
+msgid "Error al leer el archivo"
+msgstr "Error al leer el archivo"
+
+#: products/forms.py:7
+msgid "Nombre"
+msgstr "Nombre"
+
+#: products/forms.py:8
+msgid "Descripción en español"
+msgstr "Descripción en español"
+
+#: products/forms.py:10
+msgid "Descripción en inglés"
+msgstr "Descripción en inglés"
+
+#: products/forms.py:13
+msgid "Descripción en francés"
+msgstr "Descripción en francés"
+
+#: products/forms.py:15
+msgid "Precio"
+msgstr "Precio"
+
+#: products/forms.py:16
+#: products/templates/products/product_list.html:54
+msgid "Disponible"
+msgstr "Disponible"
+
+#: products/forms.py:17 products/models.py:21
+msgid "Foto"
+msgstr "Foto"
+
+#: products/models.py:8
+msgid "nombre"
+msgstr "nombre"
+
+#: products/models.py:9
+msgid "descripcion"
+msgstr "descripción"
+
+#: products/models.py:11
+msgid "descripción en inglés"
+msgstr "descripción en inglés"
+
+#: products/models.py:14
+msgid "descripción en francés"
+msgstr "descripción en francés"
+
+#: products/models.py:17
+msgid "precio"
+msgstr "precio"
+
+#: products/models.py:19
+msgid "disponible"
+msgstr "disponible"
+
+#: products/models.py:23
+msgid "creado"
+msgstr "creado"
+
+#: products/models.py:29
+msgid "Producto"
+msgstr "Producto"
+
+#: products/models.py:30 templates/base.html:58
+msgid "Products"
+msgstr "Productos"
+
+#: products/templates/products/add_product.html:7
+#: templates/base.html:61
+msgid "Add Product"
+msgstr "Agregar Producto"
+
+#: products/templates/products/add_product.html:14
+msgid "Add New Product"
+msgstr "Agregar Nuevo Producto"
+
+#: products/templates/products/add_product.html:23
+msgid "Add"
+msgstr "Agregar"
+
+#: products/templates/products/add_product.html:26
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: products/templates/products/index.html:5
+msgid "Home"
+msgstr "Inicio"
+
+#: products/templates/products/index.html:9
+msgid "Welcome to Coffee Shop"
+msgstr "Bienvenido a Coffee Shop"
+
+#: products/templates/products/index.html:12
+msgid "Our Best Coffees"
+msgstr "Nuestros Mejores Cafés"
+
+#: products/templates/products/index.html:13
+msgid "Enjoy the best selection of specialty coffees."
+msgstr "Disfruta de la mejor selección de cafés de especialidad."
+
+#: products/templates/products/index.html:16
+msgid "View all our products"
+msgstr "Ver todos nuestros productos"
+
+#: products/templates/products/index.html:22
+msgid "Visit Us"
+msgstr "Visítanos"
+
+#: products/templates/products/index.html:23
+msgid "Find your moment of peace with a cup of our freshly made coffee."
+msgstr "Encuentra tu momento de paz con una taza de nuestro café recién hecho."
+
+#: products/templates/products/product_detail.html:18
+#: products/templates/products/product_list.html:24
+msgid "No hay imagen disponible"
+msgstr "No hay imagen disponible"
+
+#: products/templates/products/product_detail.html:26
+msgid "Descripción"
+msgstr "Descripción"
+
+#: products/templates/products/product_list.html:4
+#: products/templates/products/product_list.html:8
+msgid "Lista de Productos"
+msgstr "Lista de Productos"
+
+#: products/templates/products/product_list.html:56
+msgid "No disponible"
+msgstr "No disponible"
+
+#: products/templates/products/product_list.html:61
+msgid "View details"
+msgstr "Ver detalles"
+
+#: products/templates/products/product_list.html:64
+msgid "Edit"
+msgstr "Editar"
+
+#: products/templates/products/product_list.html:73
+msgid "Add to cart"
+msgstr "Agregar al carrito"
+
+#: products/templates/products/product_list.html:81
+msgid "No hay productos disponibles."
+msgstr "No hay productos disponibles."
+
+#: templates/base.html:84
+msgid "My Order"
+msgstr "Mi Pedido"
+
+#: templates/base.html:90
+msgid "Logout"
+msgstr "Salir"
+
+#: templates/base.html:96
+msgid "Login"
+msgstr "Entrar"
+
+#: templates/base.html:123
+msgid "All rights reserved."
+msgstr "Todos los derechos reservados."
+
+#: users/templates/users/register.html:5
+msgid "Registro de Usuario"
+msgstr "Registro de Usuario"
+
+#: users/templates/users/register.html:10
+msgid "Crear una cuenta"
+msgstr "Crear una cuenta"
+
+#: users/templates/users/register.html:20
+msgid "Registrarse"
+msgstr "Registrarse"
+
+#: users/templates/users/register.html:25
+msgid "¿Ya tienes una cuenta?"
+msgstr "¿Ya tienes una cuenta?"
+
+#: users/templates/users/register.html:27
+msgid "Inicia sesión aquí"
+msgstr "Inicia sesión aquí"

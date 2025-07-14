@@ -1,100 +1,39 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coffee Shop - Editar Producto</title>
-</head>
-<body>
-    <header>
-        <h1>Coffee Shop</h1>
-        <nav>
-            <ul>
-                <li><a href="{% url 'products:index' %}">Inicio</a></li>
-                <li><a href="{% url 'products:product_list' %}">Productos</a></li>
-            </ul>
-        </nav>
-    </header>
-    
-    <main>
-        <h2>Editar Producto: {{ product.name }}</h2>
-        
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% trans "Edit Product" %} - {{ product.name }}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white shadow-md rounded-lg overflow-hidden p-6 max-w-2xl mx-auto">
+        <h2 class="text-2xl font-bold text-primary mb-6">
+            {% trans "Edit Product" %}: {{ product.name }}
+        </h2>
+
         {% if product.photo %}
-            <img src="{{ product.photo.url }}" alt="{{ product.name }}" style="max-width: 200px; margin-bottom: 20px;">
-        {% else %}
-            <p>No hay imagen - Sube una imagen a continuación</p>
+            <div class="mb-4">
+                <p class="font-semibold">{% trans "Current Image" %}:</p>
+                <img src="{% static 'images/' %}{{ product.photo }}" alt="{{ product.name }}" class="w-32 h-32 object-cover rounded-md mt-2">
+            </div>
         {% endif %}
         
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" action="{% url 'products:edit_product' product.id %}">
             {% csrf_token %}
-            <!-- Usamos cada campo del formulario por separado -->
-            <p>
-                <label for="id_name">{{ form.name.label }}:</label> 
-                {{ form.name }}
-                {% if form.name.errors %}
-                    <span class="error">{{ form.name.errors }}</span>
-                {% endif %}
-            </p>
+            {{ form|crispy }}
             
-            <p>
-                <label for="id_description">{{ form.description.label }}:</label>
-                {{ form.description }}
-                {% if form.description.errors %}
-                    <span class="error">{{ form.description.errors }}</span>
-                {% endif %}
-            </p>
-            
-            <p>
-                <label for="id_description_en">{{ form.description_en.label }}:</label>
-                {{ form.description_en }}
-                {% if form.description_en.errors %}
-                    <span class="error">{{ form.description_en.errors }}</span>
-                {% endif %}
-            </p>
-            
-            <p>
-                <label for="id_description_fr">{{ form.description_fr.label }}:</label>
-                {{ form.description_fr }}
-                {% if form.description_fr.errors %}
-                    <span class="error">{{ form.description_fr.errors }}</span>
-                {% endif %}
-            </p>
-            
-            <p>
-                <label for="id_price">{{ form.price.label }}:</label>
-                {{ form.price }}
-                {% if form.price.errors %}
-                    <span class="error">{{ form.price.errors }}</span>
-                {% endif %}
-            </p>
-            
-            <p>
-                <label for="id_available">{{ form.available.label }}:</label>
-                {{ form.available }}
-                {% if form.available.errors %}
-                    <span class="error">{{ form.available.errors }}</span>
-                {% endif %}
-            </p>
-            
-            <p>
-                <label for="id_photo">{{ form.photo.label }}:</label>
-                {{ form.photo }}
-                {% if form.photo.errors %}
-                    <span class="error">{{ form.photo.errors }}</span>
-                {% endif %}
-                {% if product.photo %}
-                    <small>(Dejar en blanco para mantener la foto actual)</small>
-                {% endif %}
-            </p>
-            
-            <button type="submit">Guardar Cambios</button>
+            <div class="mt-6 flex gap-4">
+                <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-6 rounded">
+                    {% trans "Save Changes" %}
+                </button>
+                <a href="{% url 'products:product_detail' product.id %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded">
+                    {% trans "Cancel" %}
+                </a>
+            </div>
         </form>
-        
-        <a href="{% url 'products:product_detail' product.id %}">Cancelar</a>
-    </main>
-    
-    <footer>
-        <p>&copy; 2024 Coffee Shop. Todos los derechos reservados.</p>
-    </footer>
-</body>
-</html> 
+    </div>
+</div>
+{% endblock %} 

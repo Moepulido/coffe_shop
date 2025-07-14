@@ -2,25 +2,25 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "Inicio" %} - Coffee Shop{% endblock %}
+{% block title %}{% trans "Home" %} - Coffee Shop{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8 text-center">
-    <h1 class="text-4xl font-bold text-primary mb-4">{% trans "Bienvenido a Coffee Shop" %}</h1>
+    <h1 class="text-4xl font-bold text-primary mb-4">{% trans "Welcome to Coffee Shop" %}</h1>
     
     <section class="my-8">
-        <h2 class="text-2xl font-semibold text-amber-800 mb-3">{% trans "Nuestros Mejores Cafés" %}</h2>
-        <p class="text-lg text-gray-700 mb-6">{% trans "Disfruta de la mejor selección de cafés de especialidad." %}</p>
+        <h2 class="text-2xl font-semibold text-amber-800 mb-3">{% trans "Our Best Coffees" %}</h2>
+        <p class="text-lg text-gray-700 mb-6">{% trans "Enjoy the best selection of specialty coffees." %}</p>
         <a href="{% url 'products:product_list' %}" 
            class="inline-block bg-secondary hover:bg-primary text-amber-800 hover:text-primary font-bold py-2 px-6 rounded transition duration-300">
-            {% trans "Ver todos nuestros productos" %}
+            {% trans "View all our products" %}
         </a>
     </section>
     
-    {# Puedes añadir más secciones aquí si quieres #}
+    {# You can add more sections here if you want #}
     <section class="my-8 bg-amber-100 p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-semibold text-amber-800 mb-3">{% trans "Visítanos" %}</h2>
-        <p class="text-gray-700">{% trans "Encuentra tu momento de paz con una taza de nuestro café recién hecho." %}</p>
+        <h2 class="text-2xl font-semibold text-amber-800 mb-3">{% trans "Visit Us" %}</h2>
+        <p class="text-gray-700">{% trans "Find your moment of peace with a cup of our freshly made coffee." %}</p>
     </section>
 </div>
 {% endblock content %} 

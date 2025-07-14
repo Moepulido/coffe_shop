@@ -17,52 +17,23 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.i18n import i18n_patterns
+from coffe_shop import views
 from django.conf import settings
 from django.conf.urls.static import static
-from django.conf.urls.i18n import i18n_patterns
-from django.views.i18n import set_language
-from django.contrib.auth.views import LogoutView
-from products.views import (
-    ProductFormView,
-    index,
-    product_list,
-    product_detail,
-    ProductListAPI,
-)
-from .views import serve_media
 
-# URLs sin prefijo de idioma (servicios básicos)
 urlpatterns = [
-    path("i18n/setlang/", set_language, name="set_language"),
-    path("admin/", admin.site.urls),
-    # API endpoints
-    path("api/products/", ProductListAPI.as_view(), name="api_product_list"),
-    path("api-auth/", include("rest_framework.urls")),
+    path('i18n/', include('django.conf.urls.i18n')),  # Habilita set_language
+    path('', views.root_redirect, name='root-redirect'),
+    path('admin/', admin.site.urls),
+    path('usuarios/', include('users.urls')), # <-- URLs de autenticación fuera de i18n
 ]
 
-# URLs con prefijo de idioma (todo el contenido principal)
 urlpatterns += i18n_patterns(
-    path("", index, name="index"),  # Ruta raíz con i18n
-    path("usuarios/", include("users.urls")),
-    path("logout/", LogoutView.as_view(), name="logout"),
-    path("pedidos/", include("orders.urls")),
-    path("productos/agregar/", ProductFormView.as_view(), name="add_product"),
-    path("products/", product_list, name="product_list"),
-    path("products/<int:product_id>/", product_detail, name="product_detail"),
-    path("", include("products.urls")),
-    prefix_default_language=False,  # No agregar prefijo para el idioma por defecto
+    path('', include('products.urls')),
+    path('pedidos/', include('orders.urls')),
+    # Aquí puedes agregar más rutas de contenido traducible
+    prefix_default_language=True,
 )
 
-# Para servir archivos media
-if settings.DEBUG:
-    # En desarrollo, usar el servidor de desarrollo de Django
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-else:
-    # En producción, usar nuestra vista personalizada
-    urlpatterns += [
-        path('media/<path:path>', serve_media, name='serve_media'),
-    ]
-
-# Para servir archivos static solo en desarrollo (WhiteNoise maneja esto en producción)
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

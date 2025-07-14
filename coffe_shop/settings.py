@@ -23,7 +23,7 @@ import dj_database_url
 # Esto es INSEGURO y debe revertirse a DEBUG = False tan pronto como
 # se identifique el error.
 # ==============================================================================
-# DEBUG = True # ¡REVERTIDO!
+DEBUG = False
 # print("🔥🔥🔥 MODO DEBUG FORZADO EN PRODUCCIÓN 🔥🔥🔥")
 
 # ==============================================================================
@@ -44,7 +44,7 @@ try:
     current_dir = os.getcwd()
     
     # Detección robusta de AWS
-    is_aws = 'ip-' in hostname or '/var/app' in current_dir
+    is_aws = os.environ.get('IS_AWS_ENV', 'false').lower() == 'true'
     
     if is_aws:
         print(f"🔍 AWS DETECTADO (Hostname: {hostname})")
@@ -121,7 +121,6 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
-    "coffe_shop.middleware.LanguageMiddleware",  # Nuestro middleware personalizado
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -249,13 +248,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ==============================================================================
 # Configuración específica del entorno (local vs. producción)
 # ==============================================================================
-is_aws = os.environ.get('IS_AWS_ENV', 'false').lower() == 'true'
-
 if is_aws:
-    print("🚀 Aplicando configuración de PRODUCCIÓN para AWS.")
+    print("🟢 CONFIGURACIÓN AWS ACTIVADA")
     DEBUG = False
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-    ALLOWED_HOSTS = ['*'] # Se permite todo porque EB gestiona el host a través del ELB
+    ALLOWED_HOSTS = ['*']  # Se permite todo porque EB gestiona el host a través del ELB
+
+    # Configuración de seguridad para HTTPS en producción
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
 
     # Configuración de la base de datos desde la URL de la variable de entorno
     DATABASES = {
@@ -265,7 +269,7 @@ if is_aws:
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
 
 else:
-    print("🏠 Aplicando configuración de DESARROLLO LOCAL.")
+    print("🔴 CONFIGURACIÓN LOCAL ACTIVADA")
     # La configuración por defecto ya es adecuada para desarrollo
     pass
 # ==============================================================================
