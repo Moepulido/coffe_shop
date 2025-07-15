@@ -18,9 +18,19 @@ import socket
 import dj_database_url
 
 # ==============================================================================
+# ¡¡¡ ADVERTENCIA DE DEPURACIÓN TEMPORAL !!!
+# Se ha forzado DEBUG = True para diagnosticar un error en producción.
+# Esto es INSEGURO y debe revertirse a DEBUG = False tan pronto como
+# se identifique el error.
+# ==============================================================================
+DEBUG = False
+# print("🔥🔥🔥 MODO DEBUG FORZADO EN PRODUCCIÓN 🔥🔥🔥")
+
+# ==============================================================================
 # CONFIGURACIÓN DINÁMICA DE ALLOWED_HOSTS (Prioridad #1)
 # Esto debe ejecutarse primero para evitar errores de DisallowedHost.
 # ==============================================================================
+print("🚀 [settings.py] Iniciando configuración...")
 
 # Configuración base segura
 ALLOWED_HOSTS = [
@@ -37,6 +47,7 @@ try:
     is_aws = os.environ.get('IS_AWS_ENV', 'false').lower() == 'true'
     
     if is_aws:
+        print(f"🔍 AWS DETECTADO (Hostname: {hostname})")
         
         # Agregar hostname de la instancia y su IP local
         if hostname not in ALLOWED_HOSTS:
@@ -56,39 +67,37 @@ try:
                 ALLOWED_HOSTS.append(ip)
                 
     else:
-        pass # No se pudo resolver, continuar
+        print("🏠 ENTORNO LOCAL detectado.")
 
 except Exception as e:
     # Fallback ultra seguro en caso de error de detección
+    print(f"⚠️ ERROR de detección, usando fallback: {e}")
     ALLOWED_HOSTS.append('*')
+
+print(f"✅ ALLOWED_HOSTS configurado para: {ALLOWED_HOSTS}")
+# ==============================================================================
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Carga de variables de entorno desde .env
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
+env = environ.Env()
 env_path = os.path.join(BASE_DIR, ".env")
 if os.path.exists(env_path):
+    print(f"📖 Leyendo variables de entorno desde: {env_path}")
     environ.Env.read_env(env_path)
+else:
+    print(f"🤔 No se encontró el archivo .env en: {env_path}")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY', default="django-insecure-q$%rha$c@ux@!pvxu0(194)v9z&&ug@a8(m&1(rso^le-dc&5j")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
-
-# Define ALLOWED_HOSTS based on environment
-ALLOWED_HOSTS_STRING = env('ALLOWED_HOSTS', default='127.0.0.1,localhost')
-ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_STRING.split(',')]
-
-# Detección robusta de AWS
-is_aws = os.environ.get('IS_AWS_ENV', 'false').lower() == 'true'
+# El modo DEBUG se establecerá más abajo, dependiendo del entorno.
+# El modo DEBUG se establecerá más abajo, dependiendo del entorno.
 
 # Application definition
 
@@ -240,11 +249,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Configuración específica del entorno (local vs. producción)
 # ==============================================================================
 if is_aws:
-    # En producción, DEBUG debe ser False
+    print("🟢 CONFIGURACIÓN AWS ACTIVADA")
     DEBUG = False
-    
-    # La SECRET_KEY y ALLOWED_HOSTS se leen desde variables de entorno
     SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+    ALLOWED_HOSTS = ['*']  # Se permite todo porque EB gestiona el host a través del ELB
 
     # Configuración de seguridad para HTTPS en producción
     SECURE_SSL_REDIRECT = True
@@ -261,8 +269,7 @@ if is_aws:
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
 
 else:
-    # En desarrollo, DEBUG es True
-    DEBUG = True
+    print("🔴 CONFIGURACIÓN LOCAL ACTIVADA")
     # La configuración por defecto ya es adecuada para desarrollo
     pass
 # ==============================================================================
@@ -313,3 +320,4 @@ if is_aws:
     import os
     STATICFILES_DIRS.append(('media', MEDIA_ROOT))
     
+print(f"🔧 WhiteNoise configurado para {'PRODUCCIÓN' if is_aws else 'DESARROLLO'}")
