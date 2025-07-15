@@ -81,7 +81,7 @@ if os.path.exists(env_path):
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = env.bool('DEBUG', default=False)
 
 # Define ALLOWED_HOSTS based on environment
 ALLOWED_HOSTS_STRING = env('ALLOWED_HOSTS', default='127.0.0.1,localhost')
@@ -240,12 +240,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Configuración específica del entorno (local vs. producción)
 # ==============================================================================
 if is_aws:
-    # En producción, DEBUG debe ser False
-    DEBUG = False
-    
-    # La SECRET_KEY y ALLOWED_HOSTS se leen desde variables de entorno
-    SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-
     # Configuración de seguridad para HTTPS en producción
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
@@ -255,15 +249,14 @@ if is_aws:
 
     # Configuración de la base de datos desde la URL de la variable de entorno
     DATABASES = {
-        'default': dj_database_url.config(conn_max_age=600, ssl_require=False)
+        'default': env.db('DJANGO_DB_URL')
     }
     # Asegúrate de que el motor de la base de datos sea el correcto para PostgreSQL
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
 
 else:
-    # En desarrollo, DEBUG es True
-    DEBUG = True
-    # La configuración por defecto ya es adecuada para desarrollo
+    # La configuración por defecto para la base de datos ya está definida arriba
+    # y es adecuada para el desarrollo local.
     pass
 # ==============================================================================
 
