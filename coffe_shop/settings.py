@@ -39,11 +39,14 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 
 # Define ALLOWED_HOSTS based on environment
-ALLOWED_HOSTS_STRING = env('ALLOWED_HOSTS', default='127.0.0.1,localhost')
-ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_STRING.split(',')]
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
 
 # Detección robusta de AWS
 is_aws = os.environ.get('IS_AWS_ENV', 'false').lower() == 'true'
+
+if is_aws:
+    # Add the Elastic Beanstalk hostname to ALLOWED_HOSTS in production
+    ALLOWED_HOSTS.append('coffe-shop-production.eba-qvahx84p.us-east-2.elasticbeanstalk.com')
 
 # Application definition
 
