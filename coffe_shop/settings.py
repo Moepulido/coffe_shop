@@ -17,51 +17,6 @@ import environ
 import socket
 import dj_database_url
 
-# ==============================================================================
-# CONFIGURACIÓN DINÁMICA DE ALLOWED_HOSTS (Prioridad #1)
-# Esto debe ejecutarse primero para evitar errores de DisallowedHost.
-# ==============================================================================
-
-# Configuración base segura
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'coffe-shop-production.eba-qvahx84p.us-east-2.elasticbeanstalk.com',
-]
-
-try:
-    hostname = socket.gethostname()
-    current_dir = os.getcwd()
-    
-    # Detección robusta de AWS
-    is_aws = os.environ.get('IS_AWS_ENV', 'false').lower() == 'true'
-    
-    if is_aws:
-        
-        # Agregar hostname de la instancia y su IP local
-        if hostname not in ALLOWED_HOSTS:
-            ALLOWED_HOSTS.append(hostname)
-        
-        try:
-            local_ip = socket.gethostbyname(hostname)
-            if local_ip not in ALLOWED_HOSTS:
-                ALLOWED_HOSTS.append(local_ip)
-        except socket.gaierror:
-            pass # No se pudo resolver, continuar
-
-        # Asegurar que las IPs comunes de los health checkers estén
-        common_aws_ips = ['172.31.20.200', '172.31.23.211', '172.31.45.200']
-        for ip in common_aws_ips:
-            if ip not in ALLOWED_HOSTS:
-                ALLOWED_HOSTS.append(ip)
-                
-    else:
-        pass # No se pudo resolver, continuar
-
-except Exception as e:
-    # Fallback ultra seguro en caso de error de detección
-    ALLOWED_HOSTS.append('*')
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
