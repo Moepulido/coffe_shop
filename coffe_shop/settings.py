@@ -13,33 +13,58 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 import sys
-import environ
-import socket
 import dj_database_url
+from dotenv import load_dotenv
+import requests
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Determine if we are in a production environment
+IS_PRODUCTION = os.getenv('DEBUG') == 'False'
+
+# Only load .env file if not in production
+if not IS_PRODUCTION:
+    load_dotenv()
+
+# Lee el archivo .env en la base del proyecto
 # Carga de variables de entorno desde .env
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
-env_path = os.path.join(BASE_DIR, ".env")
-if os.path.exists(env_path):
-    environ.Env.read_env(env_path)
+# environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
+
+if not SECRET_KEY:
+    raise ValueError("No hay valor para SECRET_KEY, revisa tu archivo .env")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=False)
+# The default is True, but it will be 'False' (a string) in the production environment.
+DEBUG = os.getenv("DEBUG", "True") != "False"
 
-# Define ALLOWED_HOSTS based on environment
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
+
+# Improved ALLOWED_HOSTS configuration
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+if IS_PRODUCTION:
+    # Get the Elastic Beanstalk environment URL
+    eb_host = os.getenv('EB_HOST')
+    if eb_host:
+        ALLOWED_HOSTS.append(eb_host)
+    
+    # Add instance metadata IP for health checks, if available
+    try:
+        # AWS provides the private IP via this metadata endpoint
+        response = requests.get('http://169.254.169.254/latest/meta-data/local-ipv4', timeout=0.1)
+        if response.status_code == 200:
+            ALLOWED_HOSTS.append(response.text)
+    except (requests.exceptions.RequestException, ImportError):
+        # Fallback for local testing or if metadata service is unavailable
+        # The IP from logs can be added here as a fallback
+        ALLOWED_HOSTS.append('172.31.33.35') # IP from logs
+
 
 # ==============================================================================
 # Configuración específica del entorno (local vs. producción)
@@ -58,7 +83,7 @@ if not DEBUG:
 
     # La base de datos de producción se debe configurar a través de la variable de entorno.
     DATABASES = {
-        'default': env.db('DJANGO_DB_URL')
+        'default': dj_database_url.parse(os.getenv('DJANGO_DB_URL'))
     }
     DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
 
@@ -121,7 +146,7 @@ WSGI_APPLICATION = "coffe_shop.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": env.db("DJANGO_DB_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
+    "default": dj_database_url.parse(os.getenv("DJANGO_DB_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"))
 }
 
 
