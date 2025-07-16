@@ -54,16 +54,8 @@ if IS_PRODUCTION:
     if eb_host:
         ALLOWED_HOSTS.append(eb_host)
     
-    # Add instance metadata IP for health checks, if available
-    try:
-        # AWS provides the private IP via this metadata endpoint
-        response = requests.get('http://169.254.169.254/latest/meta-data/local-ipv4', timeout=0.1)
-        if response.status_code == 200:
-            ALLOWED_HOSTS.append(response.text)
-    except (requests.exceptions.RequestException, ImportError):
-        # Fallback for local testing or if metadata service is unavailable
-        # The IP from logs can be added here as a fallback
-        ALLOWED_HOSTS.append('172.31.33.35') # IP from logs
+    # Allow all subdomains of elasticbeanstalk.com for health checks
+    ALLOWED_HOSTS.append('.elasticbeanstalk.com')
 
 
 # ==============================================================================
