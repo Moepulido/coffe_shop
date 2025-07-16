@@ -18,22 +18,24 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.i18n import i18n_patterns
-from coffe_shop import views
 from django.conf import settings
 from django.conf.urls.static import static
 
+# URLs que no necesitan prefijo de idioma (admin, login, etc.)
 urlpatterns = [
-    path('i18n/', include('django.conf.urls.i18n')),  # Habilita set_language
-    path('', views.root_redirect, name='root-redirect'),
     path('admin/', admin.site.urls),
-    path('usuarios/', include('users.urls')), # <-- URLs de autenticación fuera de i18n
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('users/', include('users.urls')),
 ]
 
+# URLs que sí se traducirán y tendrán prefijo de idioma (/en/, /es/, etc.)
 urlpatterns += i18n_patterns(
     path('', include('products.urls')),
-    path('pedidos/', include('orders.urls')),
-    # Aquí puedes agregar más rutas de contenido traducible
+    path('orders/', include('orders.urls')),
+    # La raíz de cada idioma mostrará la lista de productos.
+    # El health checker de AWS usará la raíz sin prefijo y será manejado por la app de productos.
     prefix_default_language=True,
 )
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
