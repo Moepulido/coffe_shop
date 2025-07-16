@@ -41,12 +41,26 @@ DEBUG = env.bool('DEBUG', default=False)
 # Define ALLOWED_HOSTS based on environment
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
 
-# Detección robusta de AWS
-is_aws = os.environ.get('IS_AWS_ENV', 'false').lower() == 'true'
-
-if is_aws:
-    # Add the Elastic Beanstalk hostname to ALLOWED_HOSTS in production
+# ==============================================================================
+# Configuración específica del entorno (local vs. producción)
+# ==============================================================================
+# Si no estamos en modo DEBUG, aplicamos la configuración de producción.
+if not DEBUG:
+    # Aseguramos que el host de producción esté siempre presente.
     ALLOWED_HOSTS.append('coffe-shop-production.eba-qvahx84p.us-east-2.elasticbeanstalk.com')
+
+    # Configuración de seguridad para HTTPS en producción
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+    # La base de datos de producción se debe configurar a través de la variable de entorno.
+    DATABASES = {
+        'default': env.db('DJANGO_DB_URL')
+    }
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
 
 # Application definition
 
@@ -195,42 +209,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # ==============================================================================
-# Configuración específica del entorno (local vs. producción)
-# ==============================================================================
-if is_aws:
-    # Configuración de seguridad para HTTPS en producción
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-
-    # Configuración de la base de datos desde la URL de la variable de entorno
-    DATABASES = {
-        'default': env.db('DJANGO_DB_URL')
-    }
-    # Asegúrate de que el motor de la base de datos sea el correcto para PostgreSQL
-    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
-
-else:
-    # La configuración por defecto para la base de datos ya está definida arriba
-    # y es adecuada para el desarrollo local.
-    pass
-# ==============================================================================
-
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
-    ],
-    "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ],
-}
-
-# ==============================================================================
 # Configuración de WhiteNoise para archivos estáticos
 # ==============================================================================
 # Usar WhiteNoise para servir archivos estáticos
@@ -238,7 +216,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuración adicional de WhiteNoise
 WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = True if not is_aws else False
+WHITENOISE_AUTOREFRESH = True if not DEBUG else False
 
 # Configuración de compresión para archivos estáticos
 WHITENOISE_SKIP_COMPRESS_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'zip', 'gz', 'tgz', 'bz2', 'tbz', 'xz', 'br']
@@ -249,10 +227,10 @@ WHITENOISE_STATIC_PREFIX = '/static/'
 
 # Configuración para servir archivos de media con WhiteNoise
 WHITENOISE_USE_FINDERS = True
-WHITENOISE_AUTOREFRESH = True if not is_aws else False
+WHITENOISE_AUTOREFRESH = True if not DEBUG else False
 
 # Configuración específica para archivos de media en AWS
-if is_aws:
+if DEBUG: # Only apply if in DEBUG mode
     # En producción, usar el mismo directorio para media que en desarrollo
     MEDIA_ROOT = '/var/app/current/media'
     MEDIA_URL = '/media/'
