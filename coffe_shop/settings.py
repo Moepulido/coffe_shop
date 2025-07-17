@@ -12,72 +12,38 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-import sys
 import dj_database_url
 from dotenv import load_dotenv
-import requests
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Determine if we are in a production environment
-IS_PRODUCTION = os.getenv('DEBUG') == 'False'
+# Load .env file for local development
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-# Only load .env file if not in production
-if not IS_PRODUCTION:
-    load_dotenv()
+# Check for the environment type
+DJANGO_ENV = os.getenv('DJANGO_ENV', 'development')
 
-# Lee el archivo .env en la base del proyecto
-# Carga de variables de entorno desde .env
-# environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# --- Basic Security Settings ---
+# In production, SECRET_KEY and DEBUG must be set via environment variables.
 SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG', 'True') == 'True' # Defaults to True for development
 
-if not SECRET_KEY:
-    raise ValueError("No hay valor para SECRET_KEY, revisa tu archivo .env")
+if DJANGO_ENV == 'production' and not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable not set for production")
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# The default is True, but it will be 'False' (a string) in the production environment.
-DEBUG = os.getenv("DEBUG", "True") != "False"
-
-
-# Improved ALLOWED_HOSTS configuration
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
-if IS_PRODUCTION:
-    # Get the Elastic Beanstalk environment URL
-    eb_host = os.getenv('EB_HOST')
-    if eb_host:
-        ALLOWED_HOSTS.append(eb_host)
-    
-    # Allow all subdomains of elasticbeanstalk.com for health checks
-    ALLOWED_HOSTS.append('.elasticbeanstalk.com')
+if DJANGO_ENV == 'production' and DEBUG:
+    raise ValueError("DEBUG must be set to False in production")
 
 
-# ==============================================================================
-# Configuración específica del entorno (local vs. producción)
-# ==============================================================================
-# Si no estamos en modo DEBUG, aplicamos la configuración de producción.
-if not DEBUG:
-    # Aseguramos que el host de producción esté siempre presente.
-    ALLOWED_HOSTS.append('coffe-shop-production.eba-qvahx84p.us-east-2.elasticbeanstalk.com')
+# --- Host Configuration ---
+if DJANGO_ENV == 'production':
+    # For production, trust the domain from EB and the .elasticbeanstalk.com subdomain for health checks
+    ALLOWED_HOSTS = [os.getenv('EB_HOST'), '.elasticbeanstalk.com']
+else:
+    # For development, allow localhost and 127.0.0.1
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-    # Configuración de seguridad para HTTPS en producción
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-
-    # La base de datos de producción se debe configurar a través de la variable de entorno.
-    DATABASES = {
-        'default': dj_database_url.parse(os.getenv('DJANGO_DB_URL'))
-    }
-    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
 
 # Application definition
 
@@ -132,33 +98,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "coffe_shop.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    "default": dj_database_url.parse(os.getenv("DJANGO_DB_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"))
-}
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
 
 
 # Internationalization
@@ -259,3 +198,40 @@ if DEBUG: # Only apply if in DEBUG mode
     import os
     STATICFILES_DIRS.append(('media', MEDIA_ROOT))
     
+
+# --- Database Configuration ---
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+if DJANGO_ENV == 'production':
+    # Production database configured via DJANGO_DB_URL environment variable
+    DATABASES = {
+        'default': dj_database_url.parse(os.getenv('DJANGO_DB_URL'))
+    }
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
+else:
+    # Development database (SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
+# Password validation
+# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
